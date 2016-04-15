@@ -8,11 +8,6 @@ namespace Ui {
 class ClinicCharge;
 }
 
-/*
- *ClinicCharge 门诊收费界面类
- *时间：2016年4月12日
- *作者：xb
- */
 class ClinicCharge : public QWidget
 {
     Q_OBJECT
@@ -36,7 +31,6 @@ private:
     void UpdateChargeTable();
 private:
     Ui::ClinicCharge *ui;
-
 
     QLabel *chargeNumLabel;                 // 收费单号
     QLabel *nameLabel;                      // 姓名

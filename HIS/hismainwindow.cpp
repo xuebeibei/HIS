@@ -20,25 +20,16 @@ HISMainWindow::~HISMainWindow()
 
 void HISMainWindow::createActions()
 {  
-    newAction = new QAction(tr("新建"),this);                  // 新建
-
-    saveAction = new QAction(tr("保存"),this);                 // 保存
-
-    deleteAction = new QAction(tr("删除"),this);               // 删除
-
-    exportAction = new QAction(tr("导出"),this);               // 导出
-
-    findAction = new QAction(tr("查找"),this);                 // 查找
-
-    amendAction = new QAction(tr("修改"),this);                // 修改
-
-    comboAction = new QAction(tr("套餐"),this);                // 套餐
-
-    deleteRowAction = new QAction(tr("删除行"),this);          // 删除行
-
-    previewAction = new QAction(tr("预览"),this);              // 预览
-
-    printAction = new QAction(tr("打印"),this);                // 打印
+    newAction = new QAction(tr("新建"),this);
+    saveAction = new QAction(tr("保存"),this);
+    deleteAction = new QAction(tr("删除"),this);
+    exportAction = new QAction(tr("导出"),this);
+    findAction = new QAction(tr("查找"),this);
+    amendAction = new QAction(tr("修改"),this);
+    comboAction = new QAction(tr("套餐"),this);
+    deleteRowAction = new QAction(tr("删除行"),this);
+    previewAction = new QAction(tr("预览"),this);
+    printAction = new QAction(tr("打印"),this);
 }
 
 void HISMainWindow::createMenus()
