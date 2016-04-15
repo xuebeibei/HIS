@@ -1,10 +1,20 @@
 #ifndef CONNECTDB_H
 #define CONNECTDB_H
-#include "stdafx.h"
+#include <QtSql>
+#include "WinSet.h"
+
+//-----------------------------------------------------------------------------------------------------------------------------------
+// 名称：connectDB
+// 作用：链接Sqlite数据库
+// 参数：无
+// 返回值：无
+// 备注：无
+// 时间：2016-04-15
+//-----------------------------------------------------------------------------------------------------------------------------------
 bool connectDB()
 {
-    QSqlDatabase db = QSqlDatabase::addDatabase("QSQLITE");
-    db.setDatabaseName("D:/sqlite/test.db");
+    QSqlDatabase db = QSqlDatabase::addDatabase(strDBType);
+    db.setDatabaseName(strDBName);
     if(!db.open())
         return false;
     else

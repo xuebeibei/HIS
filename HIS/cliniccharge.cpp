@@ -1,17 +1,19 @@
 #include "cliniccharge.h"
 #include "ui_cliniccharge.h"
 #include "connectDB.h"
-ClinicCharge::ClinicCharge(QWidget *parent) :
-    QWidget(parent),
+
+ClinicCharge::ClinicCharge(SubForm *parent) :
+    SubForm(parent),
     ui(new Ui::ClinicCharge)
 {
     ui->setupUi(this);
 
     init();
     SetMyLayout();
+
+    newTableFile();
     setMinimumWidth(850);
     setMinimumHeight(600);
-    LoadDate();
 }
 
 ClinicCharge::~ClinicCharge()
@@ -19,22 +21,13 @@ ClinicCharge::~ClinicCharge()
     delete ui;
 }
 
-bool ClinicCharge::LoadDate()
+void ClinicCharge::newTableFile()
 {
     if(connectDB())
     {
         UpdateChargeTable();
-        return true;
+        return;
     }
-    else
-        return false;
-
-}
-
-bool ClinicCharge::SaveDate()
-{
-    return true;
-
 }
 
 void ClinicCharge::init()
@@ -48,23 +41,23 @@ void ClinicCharge::init()
 
 void ClinicCharge::CreatePatientPart()
 {
-    nameLabel = new QLabel(tr("姓名："));
+    nameLabel = new QLabel(strNameLabel);
     nameEdit = new QLineEdit;
     nameLabel->setBuddy(nameEdit);
 
-    genderLabel = new QLabel(tr("性别："));
+    genderLabel = new QLabel(strGenderLabel);
     genderCombo = new QComboBox;
     genderLabel->setBuddy(genderCombo);
 
-    ageLabel = new QLabel(tr("年龄："));
+    ageLabel = new QLabel(strAgeLabel);
     ageEdit = new QLineEdit;
     ageLabel->setBuddy(ageEdit);
 
-    idCardNumLabel = new QLabel(tr("身份证号："));
+    idCardNumLabel = new QLabel(strIdCardLabel);
     idCardNumEdit = new QLineEdit;
     idCardNumLabel->setBuddy(idCardNumEdit);
 
-    patientGroup = new QGroupBox(tr(""));
+    patientGroup = new QGroupBox(strPatientGroup);
     QGridLayout *patientGroupLayout = new QGridLayout;
     patientGroupLayout->addWidget(nameLabel,0,0);
     patientGroupLayout->addWidget(nameEdit,0,1);
@@ -79,15 +72,15 @@ void ClinicCharge::CreatePatientPart()
 
 void ClinicCharge::CreateSocialSecurityPart()
 {
-    socialSecurityNumLabel = new QLabel(tr("社保号码："));
+    socialSecurityNumLabel = new QLabel(strSocialSecurityNumLabel);
     socialSecurityNumEdit = new QLineEdit;
     socialSecurityNumLabel->setBuddy(socialSecurityNumEdit);
 
-    medicalInsuranceTypeLabel = new QLabel(tr("医保类型："));
+    medicalInsuranceTypeLabel = new QLabel(strMedicalInsuranceTypeLabel);
     medicalInsuranceTypeCombo = new QComboBox;
     medicalInsuranceTypeLabel->setBuddy(medicalInsuranceTypeCombo);
 
-    insuranceGroup = new QGroupBox(tr(""));
+    insuranceGroup = new QGroupBox(strInsuranceGroup);
     QGridLayout *insuranceGroupLayout = new QGridLayout;
     insuranceGroupLayout->addWidget(socialSecurityNumLabel,0,0);
     insuranceGroupLayout->addWidget(socialSecurityNumEdit,0,1);
@@ -98,15 +91,15 @@ void ClinicCharge::CreateSocialSecurityPart()
 
 void ClinicCharge::CreateDoctorPart()
 {
-    departmentLabel = new QLabel(tr("就诊科室："));
+    departmentLabel = new QLabel(strDepartmentLabel);
     departmentEdit = new QLineEdit;
     departmentLabel->setBuddy(departmentEdit);
 
-    doctorLabel = new QLabel(tr("医生："));
+    doctorLabel = new QLabel(strDoctorLabel);
     doctorEdit = new QLineEdit;
     doctorLabel->setBuddy(doctorEdit);
 
-    doctorGroup = new QGroupBox(tr(""));
+    doctorGroup = new QGroupBox(strDoctorGroup);
     QGridLayout *doctorGroupLayout = new QGridLayout;
     doctorGroupLayout->addWidget(departmentLabel,0,0);
     doctorGroupLayout->addWidget(departmentEdit,0,1);
@@ -117,16 +110,16 @@ void ClinicCharge::CreateDoctorPart()
 
 void ClinicCharge::CreateIncomePart()
 {
-    dueIncomeLabel = new QLabel(tr("应收金额："));
+    dueIncomeLabel = new QLabel(strDueIncomeLabel);
     dueIncomeEdit = new QLineEdit;
     dueIncomeEdit->setEnabled(false);
     dueIncomeLabel->setBuddy(dueIncomeEdit);
 
-    realIncomeLabel = new QLabel(tr("实收金额："));
+    realIncomeLabel = new QLabel(strRealIncomeLabel);
     realIncomeEdit = new QLineEdit;
     doctorLabel->setBuddy(doctorEdit);
 
-    incomeGroup = new QGroupBox(tr(""));
+    incomeGroup = new QGroupBox(strIncomeGroup);
     QGridLayout *incomeGroupLayout = new QGridLayout;
     incomeGroupLayout->addWidget(dueIncomeLabel,0,0);
     incomeGroupLayout->addWidget(dueIncomeEdit,0,1);
@@ -137,11 +130,11 @@ void ClinicCharge::CreateIncomePart()
 
 void ClinicCharge::CreateChargeTablePart()
 {
-    chargeNumLabel = new QLabel(tr("收费单号："));
+    chargeNumLabel = new QLabel(strChargeNumLabel);
     chargeNumEdit = new QLineEdit;
     chargeNumLabel->setBuddy(chargeNumEdit);
 
-    chargeNumGroup = new QGroupBox(tr(""));
+    chargeNumGroup = new QGroupBox(strChargeNumGroup);
     QGridLayout *chargeGroupLayout = new QGridLayout;
     chargeGroupLayout->addWidget(chargeNumLabel,0,0);
     chargeGroupLayout->addWidget(chargeNumEdit,0,1);
@@ -175,7 +168,7 @@ void ClinicCharge::SetMyLayout()
 void ClinicCharge::UpdateChargeTable()
 {
     chargeTableModel = new QSqlTableModel;
-    chargeTableModel->setTable("department");
+    chargeTableModel->setTable(strDBTableName);
     chargeTableModel->select();
 
     chargeTableView->setModel(chargeTableModel);

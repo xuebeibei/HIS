@@ -18,6 +18,6 @@
 #include <iostream>
 #include <QtCore/QCoreApplication>
 #include <QtGui>
-
+#include "winSet.h"
 
 #endif // STDAFX_H

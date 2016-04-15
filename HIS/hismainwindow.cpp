@@ -1,15 +1,16 @@
 #include "hismainwindow.h"
 #include "ui_hismainwindow.h"
 
+
 HISMainWindow::HISMainWindow(QWidget *parent) :
     QMainWindow(parent),
     ui(new Ui::HISMainWindow)
 {
     ui->setupUi(this);
     createActions();
+    createMenus();
     createToolBars();
-    charge = new ClinicCharge;
-    setCentralWidget(charge);
+    showClinicCharge();
 }
 
 HISMainWindow::~HISMainWindow()
@@ -17,42 +18,86 @@ HISMainWindow::~HISMainWindow()
     delete ui;
 }
 
+void HISMainWindow::showClinicCharge()
+{
+    initToolsAllEnable();
+    subForm = new ClinicCharge;
+    setCentralWidget(subForm);
+    deleteAction->setEnabled(false);
+}
+
+void HISMainWindow::showClinicDailyReport()
+{
+    initToolsAllEnable();
+    subForm = new ClinicDailyReport;
+    setCentralWidget(subForm);
+}
+
+void HISMainWindow::newTableFile()
+{
+    subForm->newTableFile();
+}
+
 
 void HISMainWindow::createActions()
 {  
-    newAction = new QAction(tr("新建"),this);
-    saveAction = new QAction(tr("保存"),this);
-    deleteAction = new QAction(tr("删除"),this);
-    exportAction = new QAction(tr("导出"),this);
-    findAction = new QAction(tr("查找"),this);
-    amendAction = new QAction(tr("修改"),this);
-    comboAction = new QAction(tr("套餐"),this);
-    deleteRowAction = new QAction(tr("删除行"),this);
-    previewAction = new QAction(tr("预览"),this);
-    printAction = new QAction(tr("打印"),this);
+
+    clinicChargeAction = new QAction(strClinicChargeAction,this);
+    connect(clinicChargeAction, SIGNAL(triggered()), this, SLOT(showClinicCharge()));
+
+    clinicDailyReportAction = new QAction(strClinicDailyReportAction,this);
+    connect(clinicDailyReportAction, SIGNAL(triggered()), this, SLOT(showClinicDailyReport()));
+
+    newAction = new QAction(strNewAction,this);
+    connect(newAction, SIGNAL(triggered()), this, SLOT(newTableFile()));
+    saveAction = new QAction(strSaveAction,this);
+    deleteAction = new QAction(strDeleteAction,this);
+    exportAction = new QAction(strExportAction,this);
+    findAction = new QAction(strFindAction,this);
+    amendAction = new QAction(strAmendAction,this);
+    comboAction = new QAction(strComboAction,this);
+    deleteRowAction = new QAction(strDeleteRowAction,this);
+    previewAction = new QAction(strPreviewAction,this);
+    printAction = new QAction(strPrintAction,this);
 }
 
 void HISMainWindow::createMenus()
 {
-
+    clinicMenu = menuBar()->addMenu(strClinicMenu);
+    clinicMenu->addAction(clinicChargeAction);
+    clinicMenu->addAction(clinicDailyReportAction);
 }
 
 void HISMainWindow::createToolBars()
 {
-    fileToolBar = addToolBar(tr("文件"));                // 包括：新建 保存 删除 导出
+    fileToolBar = addToolBar(strFileToolBar);
     fileToolBar->addAction(newAction);
     fileToolBar->addAction(saveAction);
     fileToolBar->addAction(deleteAction);
     fileToolBar->addAction(exportAction);
 
-    editToolBar = addToolBar(tr("编辑"));                // 包括：查找 修改 删除行 套餐
+    editToolBar = addToolBar(strEditToolBar);
     editToolBar->addAction(findAction);
     editToolBar->addAction(amendAction);
     editToolBar->addAction(comboAction);
     editToolBar->addAction(deleteRowAction);
 
-    printToolBar = addToolBar(tr("打印"));               // 包括：预览 打印
+    printToolBar = addToolBar(strPrintToolBar);
     printToolBar->addAction(previewAction);
     printToolBar->addAction(printAction);
+}
+
+void HISMainWindow::initToolsAllEnable()
+{
+    newAction->setEnabled(true);
+    saveAction->setEnabled(true);
+    deleteAction->setEnabled(true);
+    exportAction->setEnabled(true);
+    findAction->setEnabled(true);
+    amendAction->setEnabled(true);
+    comboAction->setEnabled(true);
+    deleteRowAction->setEnabled(true);
+    previewAction->setEnabled(true);
+    printAction->setEnabled(true);
 }
 

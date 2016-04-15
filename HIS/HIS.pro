@@ -16,15 +16,22 @@ TEMPLATE = app
 
 SOURCES += main.cpp\
         hismainwindow.cpp \
-    cliniccharge.cpp
+    cliniccharge.cpp \
+    clinicdailyreport.cpp \
+    subform.cpp
 
 HEADERS  += hismainwindow.h \
     cliniccharge.h \
     stdafx.h \
-    connectDB.h
+    connectDB.h \
+    clinicdailyreport.h \
+    subform.h \
+    winSet.h
 
 FORMS    += hismainwindow.ui \
-    cliniccharge.ui
+    cliniccharge.ui \
+    clinicdailyreport.ui \
+    subform.ui
 
 OTHER_FILES +=
 
