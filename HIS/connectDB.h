@@ -11,13 +11,20 @@
 // 备注：无
 // 时间：2016-04-15
 //-----------------------------------------------------------------------------------------------------------------------------------
-bool connectDB()
-{
-    QSqlDatabase db = QSqlDatabase::addDatabase(strDBType);
-    db.setDatabaseName(strDBName);
-    if(!db.open())
-        return false;
-    else
-        return true;
+namespace myDB{
+    bool connectDB()
+    {
+        QSqlDatabase db = QSqlDatabase::addDatabase(strDBType);
+        db.setDatabaseName("D:/sqlite/test.db");
+        if(!db.open())
+        {
+            return false;
+        }
+        else
+        {
+            return true;
+        }
+    }
 }
+
 #endif // CONNECTDB_H

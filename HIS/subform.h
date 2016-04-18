@@ -24,6 +24,8 @@ public:
     // 时间：2016-04-15
     //-----------------------------------------------------------------------------------------------------------------------------------
     virtual void newTableFile() = 0;
+    virtual void saveTableFile() = 0;
+    virtual void findTableFile() = 0;
     
 private:
     Ui::SubForm *ui;

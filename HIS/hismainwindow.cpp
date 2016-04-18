@@ -1,7 +1,6 @@
 #include "hismainwindow.h"
 #include "ui_hismainwindow.h"
 
-
 HISMainWindow::HISMainWindow(QWidget *parent) :
     QMainWindow(parent),
     ui(new Ui::HISMainWindow)
@@ -23,7 +22,9 @@ void HISMainWindow::showClinicCharge()
     initToolsAllEnable();
     subForm = new ClinicCharge;
     setCentralWidget(subForm);
+
     deleteAction->setEnabled(false);
+    //comboAction->setEnabled(false);
 }
 
 void HISMainWindow::showClinicDailyReport()
@@ -38,6 +39,11 @@ void HISMainWindow::newTableFile()
     subForm->newTableFile();
 }
 
+void HISMainWindow::saveTableFile()
+{
+     subForm->saveTableFile();
+}
+
 
 void HISMainWindow::createActions()
 {  
@@ -50,13 +56,19 @@ void HISMainWindow::createActions()
 
     newAction = new QAction(strNewAction,this);
     connect(newAction, SIGNAL(triggered()), this, SLOT(newTableFile()));
+
     saveAction = new QAction(strSaveAction,this);
+    connect(saveAction, SIGNAL(triggered()), this, SLOT(saveTableFile()));
+
     deleteAction = new QAction(strDeleteAction,this);
     exportAction = new QAction(strExportAction,this);
     findAction = new QAction(strFindAction,this);
     amendAction = new QAction(strAmendAction,this);
-    comboAction = new QAction(strComboAction,this);
-    deleteRowAction = new QAction(strDeleteRowAction,this);
+    //comboAction = new QAction(strComboAction,this);
+    //deleteRowAction = new QAction(strDeleteRowAction,this);
+
+    //addRowAction = new QAction(strAddRowAction,this);
+
     previewAction = new QAction(strPreviewAction,this);
     printAction = new QAction(strPrintAction,this);
 }
@@ -79,8 +91,8 @@ void HISMainWindow::createToolBars()
     editToolBar = addToolBar(strEditToolBar);
     editToolBar->addAction(findAction);
     editToolBar->addAction(amendAction);
-    editToolBar->addAction(comboAction);
-    editToolBar->addAction(deleteRowAction);
+    //editToolBar->addAction(comboAction);
+    //editToolBar->addAction(deleteRowAction);
 
     printToolBar = addToolBar(strPrintToolBar);
     printToolBar->addAction(previewAction);
@@ -95,8 +107,8 @@ void HISMainWindow::initToolsAllEnable()
     exportAction->setEnabled(true);
     findAction->setEnabled(true);
     amendAction->setEnabled(true);
-    comboAction->setEnabled(true);
-    deleteRowAction->setEnabled(true);
+    //comboAction->setEnabled(true);
+    //deleteRowAction->setEnabled(true);
     previewAction->setEnabled(true);
     printAction->setEnabled(true);
 }

@@ -18,15 +18,23 @@ SOURCES += main.cpp\
         hismainwindow.cpp \
     cliniccharge.cpp \
     clinicdailyreport.cpp \
-    subform.cpp
+    subform.cpp \
+    histable.cpp \
+    persion.cpp \
+    patient.cpp \
+    clinicchargetable.cpp
 
 HEADERS  += hismainwindow.h \
     cliniccharge.h \
     stdafx.h \
-    connectDB.h \
     clinicdailyreport.h \
     subform.h \
-    winSet.h
+    winSet.h \
+    histable.h \
+    persion.h \
+    patient.h \
+    clinicchargetable.h \
+    connectDB.h
 
 FORMS    += hismainwindow.ui \
     cliniccharge.ui \

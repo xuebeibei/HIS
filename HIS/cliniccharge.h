@@ -4,6 +4,7 @@
 #include <QWidget>
 #include "stdafx.h"
 #include "subform.h"
+#include "clinicchargetable.h"
 
 namespace Ui {
 class ClinicCharge;
@@ -16,8 +17,15 @@ class ClinicCharge : public SubForm
 public:
     explicit ClinicCharge(SubForm *parent = 0);
     ~ClinicCharge();
+
 public slots:
     void newTableFile();
+    void saveTableFile();
+    void findTableFile();
+private slots:
+    void addRow();
+    void deleteRow();
+    void combo();
 
 private:
 
@@ -92,58 +100,66 @@ private:
     void SetMyLayout();
 
     //-----------------------------------------------------------------------------------------------------------------------------------
-    // 名称：UpdateChargeTable
-    // 作用：从数据库中读取收费单，并更新至界面
+    // 名称：Read
+    // 作用：从数据类中读取收费单，并更新至界面
     // 参数：无
     // 返回值：无
-    // 备注：功能还未实现
+    // 备注：无
     // 时间：2016-04-15
     //-----------------------------------------------------------------------------------------------------------------------------------
-    void UpdateChargeTable();
+    bool Read();
+
+    bool Save();
 
 private:
     Ui::ClinicCharge *ui;
     //-----------------------------------------------------------------------------------------------------------------------------------
     // - 界面控件
     //-----------------------------------------------------------------------------------------------------------------------------------
-    QLabel *chargeNumLabel;                 // 收费单号
-    QLabel *nameLabel;                      // 姓名
-    QLabel *genderLabel;                    // 性别
-    QLabel *ageLabel;                       // 年龄
-    QLabel *idCardNumLabel;                 // 身份证号码
-    QLabel *socialSecurityNumLabel;         // 社保号码
-    QLabel *medicalInsuranceTypeLabel;      // 医保类型
-    QLabel *departmentLabel;                // 科室
-    QLabel *doctorLabel;                    // 医生
-    QLabel *dueIncomeLabel;                 // 应收金额
-    QLabel *realIncomeLabel;                // 实收金额
+    QLabel *m_chargeNumLabel;                 // 收费单号
+    QLabel *m_nameLabel;                      // 姓名
+    QLabel *m_genderLabel;                    // 性别
+    QLabel *m_ageLabel;                       // 年龄
+    QLabel *m_idCardNumLabel;                 // 身份证号码
+    QLabel *m_socialSecurityNumLabel;         // 社保号码
+    QLabel *m_medicalInsuranceTypeLabel;      // 医保类型
+    QLabel *m_departmentLabel;                // 科室
+    QLabel *m_doctorLabel;                    // 医生
+    QLabel *m_dueIncomeLabel;                 // 应收金额
+    QLabel *m_realIncomeLabel;                // 实收金额
 
-    QLineEdit *chargeNumEdit;               // 收费单号
-    QLineEdit *nameEdit;                    // 姓名
-    QLineEdit *ageEdit;                     // 年龄
-    QLineEdit *idCardNumEdit;               // 身份证号码
-    QLineEdit *socialSecurityNumEdit;       // 社保号码
-    QLineEdit *departmentEdit;              // 科室
-    QLineEdit *doctorEdit;                  // 医生
-    QLineEdit *dueIncomeEdit;               // 应收金额
-    QLineEdit *realIncomeEdit;              // 实收金额
+    QLineEdit *m_chargeNumEdit;               // 收费单号
+    QLineEdit *m_nameEdit;                    // 姓名
+    QLineEdit *m_ageEdit;                     // 年龄
+    QLineEdit *m_idCardNumEdit;               // 身份证号码
+    QLineEdit *m_socialSecurityNumEdit;       // 社保号码
+    QLineEdit *m_departmentEdit;              // 科室
+    QLineEdit *m_doctorEdit;                  // 医生
+    QLineEdit *m_dueIncomeEdit;               // 应收金额
+    QLineEdit *m_realIncomeEdit;              // 实收金额
 
-    QComboBox *genderCombo;                 // 性别
-    QComboBox *medicalInsuranceTypeCombo;   // 医保类型
+    QComboBox *m_genderCombo;                 // 性别
+    QComboBox *m_medicalInsuranceTypeCombo;   // 医保类型
 
 
-    QTableView *chargeTableView;            // 收费明细表
+    QTableView *m_chargeTableView;            // 收费明细表
+    QStandardItemModel *m_chargeRecordsmodel;
 
-    QGroupBox *patientGroup;                // 患者信息组
-    QGroupBox *insuranceGroup;              // 医保信息组
-    QGroupBox *doctorGroup;                 // 医生信息组
-    QGroupBox *incomeGroup;                 // 应收信息组
-    QGroupBox *chargeNumGroup;              // 实收信息组
+    QGroupBox *m_patientGroup;                // 患者信息组
+    QGroupBox *m_insuranceGroup;              // 医保信息组
+    QGroupBox *m_doctorGroup;                 // 医生信息组
+    QGroupBox *m_incomeGroup;                 // 应收信息组
+    QGroupBox *m_chargeNumGroup;              // 实收信息组
+
+    QToolButton *addRowButton;
+    QToolButton *deleteRowButton;
+    QToolButton *comboButton;
 
     //-----------------------------------------------------------------------------------------------------------------------------------
-    // - 数据操作
+    // - 数据
     //-----------------------------------------------------------------------------------------------------------------------------------
-    QSqlTableModel *chargeTableModel;       // 收费明细表数据库操作
+    ClinicChargeTable *m_chargeTable;
+
 };
 
 #endif // CLINICCHARGE_H

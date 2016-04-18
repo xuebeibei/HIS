@@ -48,6 +48,10 @@ private slots:
     // 时间：2016-04-15
     //-----------------------------------------------------------------------------------------------------------------------------------
     void newTableFile();
+
+    void saveTableFile();
+
+
 private:
 
     //-----------------------------------------------------------------------------------------------------------------------------------
@@ -110,8 +114,9 @@ private:
 
     QAction *findAction;                 // 查找
     QAction *amendAction;                // 修改
-    QAction *comboAction;                // 套餐
-    QAction *deleteRowAction;            // 删除行
+    //QAction *comboAction;                // 套餐
+    //QAction *deleteRowAction;            // 删除行
+    //QAction *addRowAction;               // 添加行
 
     QAction *previewAction;              // 预览
     QAction *printAction;                // 打印

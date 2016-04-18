@@ -17,3 +17,11 @@ void ClinicDailyReport::newTableFile()
 {
     QMessageBox::information(this,"提示","门诊日结");
 }
+
+void ClinicDailyReport::saveTableFile()
+{
+}
+
+void ClinicDailyReport::findTableFile()
+{
+}
