@@ -15,7 +15,7 @@ namespace myDB{
     bool connectDB()
     {
         QSqlDatabase db = QSqlDatabase::addDatabase(strDBType);
-        db.setDatabaseName("D:/sqlite/test.db");
+        db.setDatabaseName(strDBName);
         if(!db.open())
         {
             return false;

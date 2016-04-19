@@ -16,13 +16,21 @@ enum Gender{
     woman = 1
 };
 
+enum ChargeItemIndex
+{
+    chargeItemNo = 0,
+    chargeItemName = 1,
+    chargeItemCount = 2,
+    chargeItemPrice = 3,
+    clinicReceipt = 4,
+    clinicSort = 5
+};
+
 //---------------------------------------------------------------------------------------------------------------------------------------
 // 数据库
 //---------------------------------------------------------------------------------------------------------------------------------------
 const QString strDBType = "QSQLITE";
-const QString strDBName = "./test.db";
-const QString strDBClinicCharge = "收费单";
-const QString strDBClinicChargeRecords = "收费记录";
+const QString strDBName = "D:/qtProgram/HIS2.0/HIS/sqlite/test.db"; // 问题：想办法改为相对路径
 
 //---------------------------------------------------------------------------------------------------------------------------------------
 // 主窗体 - 工具栏
@@ -83,7 +91,5 @@ const QString strClinicChargeNumGroup = "收费单信息";
 const QString strClincChargeNumLabel = "收费单号：";
 
 const QString strClinicChargeNumPR = "CC";
-
-
 
 #endif // WINSTRING_H

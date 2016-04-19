@@ -1,14 +1,6 @@
 #include "cliniccharge.h"
 #include "ui_cliniccharge.h"
-enum ChargeItemIndex
-{
-    chargeItemNo = 0,
-    chargeItemName = 1,
-    chargeItemCount = 2,
-    chargeItemPrice = 3,
-    clinicReceipt = 4,
-    clinicSort = 5
-};
+
 
 ClinicCharge::ClinicCharge(SubForm *parent) :
     SubForm(parent),
