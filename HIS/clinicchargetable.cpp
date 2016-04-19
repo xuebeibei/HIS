@@ -3,17 +3,21 @@
 
 ClinicChargeTable::ClinicChargeTable()
 {
-    m_strPrefixion = "CC";
+    m_strPrefixion = strClinicChargeNumPR;
     m_dDueIncome = 0;
     m_dRealIncome = 0;
+    m_strID = getNewClinicChargeID();
+    m_chargeItems.clear();
 }
 
 QString ClinicChargeTable::getID()
 {
-    if(m_strID.isEmpty())
-        return m_strPrefixion + getNewID();
-    else
-        return m_strID;
+    return m_strID;
+}
+
+QString ClinicChargeTable::getNewClinicChargeID()
+{
+    return /*m_strPrefixion + */getNewID();
 }
 
 double ClinicChargeTable::getDueIncome() const
@@ -34,6 +38,11 @@ Patient ClinicChargeTable::getPatient() const
 QVector<ClinicChargeItem *> ClinicChargeTable::getChargeItems() const
 {
     return m_chargeItems;
+}
+
+void ClinicChargeTable::setID(QString strID)
+{
+    this->m_strID = strID;
 }
 
 void ClinicChargeTable::setDueIncome(double d_DueIncome)
@@ -61,13 +70,13 @@ void ClinicChargeTable::setPatient(Patient patient)
     this->m_patient = patient;
 }
 
-bool ClinicChargeTable::readChargeTable(QString strId)
+bool ClinicChargeTable::readChargeTable()
 {
     if(myDB::connectDB())
     {
         QSqlTableModel *model = new QSqlTableModel;
-        model->setTable("ClinicCharge");
-        model->setFilter("ID = " + strId);
+        model->setTable(strClinicCharge);
+        model->setFilter("ID = " + m_strID);
         model->select();
         for(int i = 0; i< model->rowCount();i++)
         {
@@ -90,15 +99,16 @@ bool ClinicChargeTable::readChargeTable(QString strId)
     else
         return false;
 }
-bool ClinicChargeTable::ReadChargeRecords(QString strId)
+bool ClinicChargeTable::ReadChargeRecords()
 {
     if(myDB::connectDB())
     {
         QSqlTableModel *model = new QSqlTableModel;
-        model->setTable("ClinicChargeRecords_1");
-        model->setFilter("CliniChargeId = " + strId);
+        model->setTable(strClinicChargeRecords);
+        model->setFilter("ClinicChargeId = " + m_strID);
         model->select();
 
+        m_chargeItems.clear();
         for(int i =0; i < model->rowCount();i++)
         {
             QSqlRecord record = model->record(i);
@@ -110,7 +120,7 @@ bool ClinicChargeTable::ReadChargeRecords(QString strId)
             item->setChargeItemPrice(record.value("ChargeItemPrice").toDouble());
             item->setClinicReceipt(record.value("ChinicReceipt").toString());
             item->setClinicSort(record.value("ClinicSort").toString());
-            item->setClinicChargeId(record.value("CliniChargeId").toString());
+            item->setClinicChargeId(record.value("ClinicChargeId").toString());
 
             m_chargeItems.append(item);
         }
@@ -126,18 +136,26 @@ bool ClinicChargeTable::saveChargeRecords()
     if(myDB::connectDB())
     {
         QSqlTableModel *model = new QSqlTableModel;
-        model->setTable("ClinicChargeRecords_1");
+        model->setTable(strClinicChargeRecords);
+        QString strID = m_strID;
+        model->setFilter("ClinicChargeId = " + strID);
+        model->select();
+        if(model->rowCount()>0)
+        {
+            model->removeRows(0,model->rowCount());
+        }
+
         for(int i = 0; i < m_chargeItems.size(); i++)
         {
             int row = i;
             model->insertRows(row,1);
-            model->setData(model->index(row,0),m_chargeItems.at(i)->getChargeItemNo());
-            model->setData(model->index(row,1),m_chargeItems.at(i)->getChargeItemName());
-            model->setData(model->index(row,2),m_chargeItems.at(i)->getChargeItemCount());
-            model->setData(model->index(row,3),m_chargeItems.at(i)->getChargeItemPrice());
-            model->setData(model->index(row,4),m_chargeItems.at(i)->getClinicReceipt());
-            model->setData(model->index(row,5),m_chargeItems.at(i)->getClinicSort());
-            model->setData(model->index(row,6),m_chargeItems.at(i)->getClinicChargeId());
+            model->setData(model->index(row,chargeItemNo),m_chargeItems.at(row)->getChargeItemNo());
+            model->setData(model->index(row,chargeItemName),m_chargeItems.at(row)->getChargeItemName());
+            model->setData(model->index(row,chargeItemCount),m_chargeItems.at(row)->getChargeItemCount());
+            model->setData(model->index(row,chargeItemPrice),m_chargeItems.at(row)->getChargeItemPrice());
+            model->setData(model->index(row,clinicReceipt),m_chargeItems.at(row)->getClinicReceipt());
+            model->setData(model->index(row,clinicSort),m_chargeItems.at(row)->getClinicSort());
+            model->setData(model->index(row,clinicChargeId),m_chargeItems.at(row)->getClinicChargeId());
             model->submitAll();
         }
 
@@ -152,7 +170,14 @@ bool ClinicChargeTable::saveChargeTable()
     if(myDB::connectDB())
     {
         QSqlTableModel *model = new QSqlTableModel;
-        model->setTable("ClinicCharge");
+        model->setTable(strClinicCharge);
+        model->setFilter("ID = " + m_strID);
+        model->select();
+        if(model->rowCount() == 1)
+        {
+            model->removeRows(0,1);
+        }
+
         int row =0;
         model->insertRows(row,1);
         model->setData(model->index(row,0),m_strID);
@@ -174,11 +199,11 @@ bool ClinicChargeTable::saveChargeTable()
         return false;
 }
 
-bool ClinicChargeTable::Read(QString strId)
+bool ClinicChargeTable::Read()
 {
-    if(readChargeTable(strId))
+    if(readChargeTable())
     {
-        return ReadChargeRecords(strId);
+        return ReadChargeRecords();
     }
     else
         return false;
@@ -194,13 +219,69 @@ bool ClinicChargeTable::Save()
         return false;
 }
 
-bool ClinicChargeTable::Find(QString strId)
-{
-    return Read(strId);
-}
+
 
 bool ClinicChargeTable::Delete()
 {
-    return true;
+      if(deleteChargeTable())
+            return deleteChargeRecords();
+        else
+            return false;
+
 }
 
+bool ClinicChargeTable::deleteChargeTable()
+{
+    if(myDB::connectDB())
+    {
+        QSqlTableModel *model = new QSqlTableModel;
+        model->setTable(strClinicCharge);
+        QString str = m_strID;
+        model->setFilter("ID = " + str);
+        int n = 0;
+        if(model->select())// select()返回false,无法得到符合条件的数据行数，导致无法删除；原因经查跟ID号码过长有关。
+        {
+            n = model->rowCount();//??
+        }
+
+        if(n == 1)
+        {
+            model->removeRows(0,1);
+            model->submitAll();
+            return true;
+        }
+        else
+            return false;
+    }
+    else
+        return false;
+
+}
+
+bool ClinicChargeTable::deleteChargeRecords()
+{
+    if(myDB::connectDB())
+    {
+        QSqlTableModel *model = new QSqlTableModel;
+        model->setTable(strClinicChargeRecords);
+        QString strID = m_strID;
+        model->setFilter("ClinicChargeId = " + strID);
+
+        int n = 0;
+        if(model->select())// select()返回false,无法得到符合条件的数据行数，导致无法删除；原因经查跟ID号码过长有关。
+        {
+            n = model->rowCount();//??
+        }
+
+        if(n>0)
+        {
+            model->removeRows(0,n);
+            model->submitAll();
+            return true;
+        }
+        else
+            return false;
+    }
+    else
+        return false;
+}

@@ -9,27 +9,32 @@ class ClinicChargeTable : public HISTable
 public:
     ClinicChargeTable();
     QString getID();
+    QString getNewClinicChargeID();
     double getDueIncome() const;
     double getRealImcome() const;
     Patient getPatient() const;
     QVector<ClinicChargeItem*> getChargeItems() const;
 
+    void setID(QString strID);
     void setDueIncome(double d_DueIncome);
     void setRealIncome(double d_RealIncome);
     void setChargeItems(QVector<ClinicChargeItem*> chargeItems);
     void setPatient(Patient patient);
 
-    bool Read(QString strId = "");
+    bool Read();
     bool Save();
-    virtual bool Find(QString strId);
     bool Delete();
 protected:
-    bool readChargeTable(QString strId);
-    bool ReadChargeRecords(QString strId);
+    bool readChargeTable();
+    bool ReadChargeRecords();
     bool saveChargeRecords();
     bool saveChargeTable();
+    bool deleteChargeTable();
+    bool deleteChargeRecords();
+
 
 protected:
+    QString m_strID;
     QString m_strPrefixion;
     double m_dDueIncome;
     double m_dRealIncome;

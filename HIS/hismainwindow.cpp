@@ -23,8 +23,9 @@ void HISMainWindow::showClinicCharge()
     subForm = new ClinicCharge;
     setCentralWidget(subForm);
 
+    saveAction->setEnabled(true);
     deleteAction->setEnabled(false);
-    //comboAction->setEnabled(false);
+    amendAction->setEnabled(false);
 }
 
 void HISMainWindow::showClinicDailyReport()
@@ -37,18 +38,61 @@ void HISMainWindow::showClinicDailyReport()
 void HISMainWindow::newTableFile()
 {
     subForm->newTableFile();
+
+    saveAction->setEnabled(true);
+    deleteAction->setEnabled(false);
+    amendAction->setEnabled(false);
 }
 
 void HISMainWindow::saveTableFile()
 {
     subForm->saveTableFile();
+
+    saveAction->setEnabled(true);
+    deleteAction->setEnabled(true);
+    amendAction->setEnabled(true);
+}
+
+void HISMainWindow::deleteTableFile()
+{
+    subForm->deleteTableFile();
+    saveAction->setEnabled(true);
+    deleteAction->setEnabled(false);
+    amendAction->setEnabled(false);
+}
+
+void HISMainWindow::exportTableFile()
+{
+    subForm->exportTableFile();
 }
 
 void HISMainWindow::findTableFile()
 {
     subForm->findTableFile();
+
+    saveAction->setEnabled(false);
+    deleteAction->setEnabled(true);
+    amendAction->setEnabled(true);
 }
 
+void HISMainWindow::amendTableFile()
+{
+    subForm->amendTableFile();
+
+    saveAction->setEnabled(true);
+    deleteAction->setEnabled(true);
+    amendAction->setEnabled(false);
+}
+
+void HISMainWindow::previewTableFile()
+{
+    subForm->previewTableFile();
+}
+
+void HISMainWindow::printTableFile()
+{
+    subForm->printTableFile();
+}
 
 void HISMainWindow::createActions()
 {  
@@ -66,13 +110,22 @@ void HISMainWindow::createActions()
     connect(saveAction, SIGNAL(triggered()), this, SLOT(saveTableFile()));
 
     deleteAction = new QAction(strDeleteAction,this);
+    connect(deleteAction, SIGNAL(triggered()), this, SLOT(deleteTableFile()));
+
     exportAction = new QAction(strExportAction,this);
+    connect(exportAction, SIGNAL(triggered()), this, SLOT(exportTableFile()));
+
     findAction = new QAction(strFindAction,this);
     connect(findAction, SIGNAL(triggered()), this, SLOT(findTableFile()));
+
     amendAction = new QAction(strAmendAction,this);
+    connect(amendAction, SIGNAL(triggered()), this, SLOT(amendTableFile()));
 
     previewAction = new QAction(strPreviewAction,this);
+    connect(previewAction, SIGNAL(triggered()), this, SLOT(previewTableFile()));
+
     printAction = new QAction(strPrintAction,this);
+    connect(printAction, SIGNAL(triggered()), this, SLOT(printTableFile()));
 }
 
 void HISMainWindow::createMenus()
@@ -93,8 +146,6 @@ void HISMainWindow::createToolBars()
     editToolBar = addToolBar(strEditToolBar);
     editToolBar->addAction(findAction);
     editToolBar->addAction(amendAction);
-    //editToolBar->addAction(comboAction);
-    //editToolBar->addAction(deleteRowAction);
 
     printToolBar = addToolBar(strPrintToolBar);
     printToolBar->addAction(previewAction);
@@ -109,8 +160,6 @@ void HISMainWindow::initToolsAllEnable()
     exportAction->setEnabled(true);
     findAction->setEnabled(true);
     amendAction->setEnabled(true);
-    //comboAction->setEnabled(true);
-    //deleteRowAction->setEnabled(true);
     previewAction->setEnabled(true);
     printAction->setEnabled(true);
 }

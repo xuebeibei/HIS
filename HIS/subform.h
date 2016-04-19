@@ -25,7 +25,12 @@ public:
     //-----------------------------------------------------------------------------------------------------------------------------------
     virtual void newTableFile() = 0;
     virtual void saveTableFile() = 0;
+    virtual void deleteTableFile() = 0;
+    virtual void exportTableFile() = 0;
     virtual void findTableFile() = 0;
+    virtual void amendTableFile() = 0;
+    virtual void previewTableFile() = 0;
+    virtual void printTableFile() = 0;
     
 private:
     Ui::SubForm *ui;

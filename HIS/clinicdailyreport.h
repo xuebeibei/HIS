@@ -19,7 +19,12 @@ public:
 public slots:
     void newTableFile();
     void saveTableFile();
+    void deleteTableFile();
+    void exportTableFile();
     void findTableFile();
+    void amendTableFile();
+    void previewTableFile();
+    void printTableFile();
     
 private:
     Ui::ClinicDailyReport *ui;

@@ -48,9 +48,13 @@ private slots:
     // 时间：2016-04-15
     //-----------------------------------------------------------------------------------------------------------------------------------
     void newTableFile();
-
     void saveTableFile();
+    void deleteTableFile();
+    void exportTableFile();
     void findTableFile();
+    void amendTableFile();
+    void previewTableFile();
+    void printTableFile();
 
 
 private:
@@ -105,7 +109,7 @@ private:
     QAction *clinicDailyReportAction;    // 门诊日结
 
     QToolBar *fileToolBar;               // 包括：新建 保存 删除 导出
-    QToolBar *editToolBar;               // 包括：查找 修改 删除行 套餐
+    QToolBar *editToolBar;               // 包括：查找 修改
     QToolBar *printToolBar;              // 包括：预览 打印
 
     QAction *newAction;                  // 新建
@@ -115,9 +119,6 @@ private:
 
     QAction *findAction;                 // 查找
     QAction *amendAction;                // 修改
-    //QAction *comboAction;                // 套餐
-    //QAction *deleteRowAction;            // 删除行
-    //QAction *addRowAction;               // 添加行
 
     QAction *previewAction;              // 预览
     QAction *printAction;                // 打印

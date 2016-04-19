@@ -21,7 +21,12 @@ public:
 public slots:
     void newTableFile();
     void saveTableFile();
+    void deleteTableFile();
+    void exportTableFile();
     void findTableFile();
+    void amendTableFile();
+    void previewTableFile();
+    void printTableFile();
 private slots:
     void addRow();
     void deleteRow();
@@ -29,15 +34,24 @@ private slots:
 
 private:
 
+    void init();
+    void initPatientPart();
+    void initSocialSecurityPart();
+    void initDoctorPart();
+    void initIncomePart();
+    void initChargeTablePart();
+    void initTableModel();
+    void setAllDefaultEnable();
+    void setAllUnEnable();
     //-----------------------------------------------------------------------------------------------------------------------------------
-    // 名称：init
+    // 名称：create
     // 作用：创建门诊收费窗体中所有控件
     // 参数：无
     // 返回值：无
     // 备注：无
     // 时间：2016-04-15
     //-----------------------------------------------------------------------------------------------------------------------------------
-    void init();
+    void create();
 
     //-----------------------------------------------------------------------------------------------------------------------------------
     // 名称：CreatePatientPart
@@ -107,10 +121,9 @@ private:
     // 备注：无
     // 时间：2016-04-15
     //-----------------------------------------------------------------------------------------------------------------------------------
-    bool Read(QString strId = "");
-
+    bool Read();
     bool Save();
-    void initTableModel();
+    bool Delete();
 
 private:
     Ui::ClinicCharge *ui;
