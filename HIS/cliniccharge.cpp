@@ -1,5 +1,14 @@
 #include "cliniccharge.h"
 #include "ui_cliniccharge.h"
+enum ChargeItemIndex
+{
+    chargeItemNo = 0,
+    chargeItemName = 1,
+    chargeItemCount = 2,
+    chargeItemPrice = 3,
+    clinicReceipt = 4,
+    clinicSort = 5
+};
 
 ClinicCharge::ClinicCharge(SubForm *parent) :
     SubForm(parent),
@@ -18,6 +27,7 @@ ClinicCharge::~ClinicCharge()
 
 void ClinicCharge::newTableFile()
 {
+    m_chargeNumEdit->setText("");
     Read();
 }
 
@@ -28,7 +38,8 @@ void ClinicCharge::saveTableFile()
 
 void ClinicCharge::findTableFile()
 {
-
+    QMessageBox::information(this,"提示","查询单号为222的收费单");
+    Read("222");
 }
 
 void ClinicCharge::addRow()
@@ -45,6 +56,7 @@ void ClinicCharge::deleteRow()
 
 void ClinicCharge::combo()
 {
+    QMessageBox::information(this,"提示","选择套餐！");
 }
 
 void ClinicCharge::init()
@@ -176,15 +188,20 @@ void ClinicCharge::CreateChargeTablePart()
 
     m_chargeTableView = new QTableView;
     m_chargeRecordsmodel = new QStandardItemModel;
-
-    m_chargeRecordsmodel->setHorizontalHeaderItem(0, new QStandardItem(QObject::tr("收费项编码")));
-    m_chargeRecordsmodel->setHorizontalHeaderItem(1, new QStandardItem(QObject::tr("收费项名称")));
-    m_chargeRecordsmodel->setHorizontalHeaderItem(2, new QStandardItem(QObject::tr("数量")));
-    m_chargeRecordsmodel->setHorizontalHeaderItem(3, new QStandardItem(QObject::tr("单价")));
-    m_chargeRecordsmodel->setHorizontalHeaderItem(4, new QStandardItem(QObject::tr("门诊收据")));
-    m_chargeRecordsmodel->setHorizontalHeaderItem(5, new QStandardItem(QObject::tr("门诊分类")));
-    m_chargeRecordsmodel->setItem(0, 5, new QStandardItem(""));
     m_chargeTableView->setModel(m_chargeRecordsmodel);
+    initTableModel();
+}
+
+void ClinicCharge::initTableModel()
+{
+    m_chargeRecordsmodel->clear();
+    m_chargeRecordsmodel->setHorizontalHeaderItem(chargeItemNo, new QStandardItem(QObject::tr("收费项编码")));
+    m_chargeRecordsmodel->setHorizontalHeaderItem(chargeItemName, new QStandardItem(QObject::tr("收费项名称")));
+    m_chargeRecordsmodel->setHorizontalHeaderItem(chargeItemCount, new QStandardItem(QObject::tr("数量")));
+    m_chargeRecordsmodel->setHorizontalHeaderItem(chargeItemPrice, new QStandardItem(QObject::tr("单价")));
+    m_chargeRecordsmodel->setHorizontalHeaderItem(clinicReceipt, new QStandardItem(QObject::tr("门诊收据")));
+    m_chargeRecordsmodel->setHorizontalHeaderItem(clinicSort, new QStandardItem(QObject::tr("门诊分类")));
+    m_chargeRecordsmodel->setItem(0, 5, new QStandardItem(""));
 }
 
 void ClinicCharge::SetMyLayout()
@@ -214,35 +231,36 @@ void ClinicCharge::SetMyLayout()
     setLayout(MainLayout);
 }
 
-bool ClinicCharge::Read()
+bool ClinicCharge::Read(QString strId)
 {
-    if(m_chargeTable->Read())
+    if(m_chargeTable->Read(strId))
     {
         m_chargeNumEdit->setText(m_chargeTable->getID());
-        QString strName = m_chargeTable->getName();
+        QString strName = m_chargeTable->getPatient().getName();
         m_nameEdit->setText(strName);
-        m_ageEdit->setText(QString::number(m_chargeTable->getAge()));
-        m_genderCombo->setCurrentIndex(m_chargeTable->getGender());
-        m_idCardNumEdit->setText(m_chargeTable->getIDCard());
-        m_socialSecurityNumEdit->setText(m_chargeTable->getSocialSecurityNum());
-        m_medicalInsuranceTypeCombo->setCurrentIndex(m_chargeTable->getMedicalInsuranceType());
-        m_departmentEdit->setText(m_chargeTable->getDepartment());
-        m_doctorEdit->setText(m_chargeTable->getDoctor());
+        m_ageEdit->setText(QString::number(m_chargeTable->getPatient().getAge()));
+        m_genderCombo->setCurrentIndex(m_chargeTable->getPatient().getGender());
+        m_idCardNumEdit->setText(m_chargeTable->getPatient().getIDCard());
+        m_socialSecurityNumEdit->setText(m_chargeTable->getPatient().getSocialSecurityNum());
+        m_medicalInsuranceTypeCombo->setCurrentIndex(m_chargeTable->getPatient().getMedicalInsuranceType());
+        m_departmentEdit->setText(m_chargeTable->getPatient().getDepartment());
+        m_doctorEdit->setText(m_chargeTable->getPatient().getDoctor());
         m_dueIncomeEdit->setText(QString::number(m_chargeTable->getDueIncome()));
         m_realIncomeEdit->setText(QString::number(m_chargeTable->getRealImcome()));
-        // 将明细显示在界面
-        QSqlTableModel *model = m_chargeTable->getChargeRecords();
-        for(int i = 0; i< model->rowCount();i++)
-        {
-            QSqlRecord record = model->record(i);
-            m_chargeRecordsmodel->setItem(0, 0, new QStandardItem(record.value("ChargeItemNo").toString()));
-            m_chargeRecordsmodel->setItem(0, 1, new QStandardItem(record.value("ChargeItemName").toString()));
-            m_chargeRecordsmodel->setItem(0, 2, new QStandardItem(record.value("ChargeItemCount").toString()));
-            m_chargeRecordsmodel->setItem(0, 3, new QStandardItem(record.value("ChargeItemPrice").toString()));
-            m_chargeRecordsmodel->setItem(0, 4, new QStandardItem(record.value("ChinicReceipt").toString()));
-            m_chargeRecordsmodel->setItem(0, 5, new QStandardItem(record.value("ClinicSort ").toString()));
-        }
 
+
+        QVector<ClinicChargeItem*> chargeItems = m_chargeTable->getChargeItems();
+        for(int index = 0; index< chargeItems.size();index++)
+        {
+            ClinicChargeItem *item = new ClinicChargeItem(chargeItems.at(index));
+
+            m_chargeRecordsmodel->setItem(index, chargeItemNo, new QStandardItem(item->getChargeItemNo()));
+            m_chargeRecordsmodel->setItem(index, chargeItemName, new QStandardItem(item->getChargeItemName()));
+            m_chargeRecordsmodel->setItem(index, chargeItemCount, new QStandardItem(QString::number(item->getChargeItemCount())));
+            m_chargeRecordsmodel->setItem(index, chargeItemPrice, new QStandardItem(QString::number(item->getChargeItemPrice())));
+            m_chargeRecordsmodel->setItem(index, clinicReceipt, new QStandardItem(item->getClinicReceipt()));
+            m_chargeRecordsmodel->setItem(index, clinicSort, new QStandardItem(item->getClinicSort()));
+        }
         return true;
     }
     else
@@ -252,20 +270,81 @@ bool ClinicCharge::Read()
 bool ClinicCharge::Save()
 {
     m_chargeTable->setID(m_chargeNumEdit->text());
-    m_chargeTable->setName(m_nameEdit->text());
-    m_chargeTable->setAge(m_ageEdit->text().toInt());
-    m_chargeTable->setGender((Gender)m_genderCombo->currentIndex());
-    m_chargeTable->setIDCard(m_idCardNumEdit->text());
-    m_chargeTable->setSocialSecurityNum(m_socialSecurityNumEdit->text());
-    m_chargeTable->setMedicalInsuranceType((MedicalInsuranceType)m_medicalInsuranceTypeCombo->currentIndex());
-    m_chargeTable->setDepartment(m_departmentEdit->text());
-    m_chargeTable->setDoctor(m_doctorEdit->text());
+    m_chargeTable->getPatient().setName(m_nameEdit->text());
+    m_chargeTable->getPatient().setAge(m_ageEdit->text().toInt());
+    m_chargeTable->getPatient().setGender((Gender)m_genderCombo->currentIndex());
+    m_chargeTable->getPatient().setIDCard(m_idCardNumEdit->text());
+    m_chargeTable->getPatient().setSocialSecurityNum(m_socialSecurityNumEdit->text());
+    m_chargeTable->getPatient().setMedicalInsuranceType((MedicalInsuranceType)m_medicalInsuranceTypeCombo->currentIndex());
+    m_chargeTable->getPatient().setDepartment(m_departmentEdit->text());
+    m_chargeTable->getPatient().setDoctor(m_doctorEdit->text());
     m_chargeTable->setDueIncome(m_dueIncomeEdit->text().toDouble());
     m_chargeTable->setRealIncome(m_realIncomeEdit->text().toDouble());
-     // 将明细保存至数据
-    m_chargeTable->saveChargeRecords(m_chargeRecordsmodel);//??
+    // 将明细显示在界面
+    QVector<ClinicChargeItem*> chargeItems;
+    for(int row = 0; row< m_chargeRecordsmodel->rowCount();row++)
+    {
+        ClinicChargeItem *chargeItem = new ClinicChargeItem;
+        for(int column = 0; column < m_chargeRecordsmodel->columnCount();column++)
+        {
+            QStandardItem *modelItem = m_chargeRecordsmodel->item(row,column);
+            if(modelItem == NULL)
+                continue;
+            else
+            {
+                switch(column)
+                {
+                case chargeItemNo:
+                {
+                    QString strNo = modelItem->text();
+                    chargeItem->setChargeItemNo(strNo);
+                    break;
+                }
+                case chargeItemName:
+                {
+                    QString strName = modelItem->text();
+                    chargeItem->setChargeItemName(strName);
+                    break;
+                }
+                case chargeItemCount:
+                {
+                    int nCount = modelItem->text().toInt();
+                    chargeItem->setChargeItemCount(nCount);
+                    break;
+                }
+                case chargeItemPrice:
+                {
+                    double nPrice= modelItem->text().toDouble();
+                    chargeItem->setChargeItemPrice(nPrice);
+                    break;
+                }
+                case clinicReceipt:
+                {
+                    QString strReceipt = modelItem->text();
+                    chargeItem->setClinicReceipt(strReceipt);
+                    break;
+                }
+                case clinicSort:
+                {
+                    QString strSort = modelItem->text();
+                    chargeItem->setClinicSort(strSort);
+                    break;
+                }
+                default:
+                    break;
+                }
+            }
+        }
+        chargeItem->setClinicChargeId(m_chargeNumEdit->text());
+        chargeItems.append(chargeItem);
+    }
+    m_chargeTable->setChargeItems(chargeItems);
+
     if(m_chargeTable->Save())
+    {
+        QMessageBox::information(this,"提示","保存成功！");
         return true;
+    }
     else
         return false;
 }

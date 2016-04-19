@@ -41,7 +41,12 @@ void HISMainWindow::newTableFile()
 
 void HISMainWindow::saveTableFile()
 {
-     subForm->saveTableFile();
+    subForm->saveTableFile();
+}
+
+void HISMainWindow::findTableFile()
+{
+    subForm->findTableFile();
 }
 
 
@@ -63,11 +68,8 @@ void HISMainWindow::createActions()
     deleteAction = new QAction(strDeleteAction,this);
     exportAction = new QAction(strExportAction,this);
     findAction = new QAction(strFindAction,this);
+    connect(findAction, SIGNAL(triggered()), this, SLOT(findTableFile()));
     amendAction = new QAction(strAmendAction,this);
-    //comboAction = new QAction(strComboAction,this);
-    //deleteRowAction = new QAction(strDeleteRowAction,this);
-
-    //addRowAction = new QAction(strAddRowAction,this);
 
     previewAction = new QAction(strPreviewAction,this);
     printAction = new QAction(strPrintAction,this);

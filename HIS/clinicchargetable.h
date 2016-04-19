@@ -2,38 +2,39 @@
 #define CLINICCHARGETABLE_H
 #include "histable.h"
 #include "patient.h"
+#include "clinicchargeitem.h"
 
-
-class ClinicChargeTable : public HISTable,public Patient
+class ClinicChargeTable : public HISTable
 {
 public:
     ClinicChargeTable();
     QString getID();
     double getDueIncome() const;
     double getRealImcome() const;
-    QSqlTableModel* getChargeRecords() const;
+    Patient getPatient() const;
+    QVector<ClinicChargeItem*> getChargeItems() const;
 
     void setDueIncome(double d_DueIncome);
     void setRealIncome(double d_RealIncome);
-    void setChargeRecords(QSqlTableModel *ChargeRecordsModel);
+    void setChargeItems(QVector<ClinicChargeItem*> chargeItems);
+    void setPatient(Patient patient);
 
-    bool Read();
+    bool Read(QString strId = "");
     bool Save();
-    void saveChargeRecords(QStandardItemModel *chargeRecordsmodel);
+    virtual bool Find(QString strId);
     bool Delete();
 protected:
-    bool findChargeTableByID(QString strId);
-    bool findChargeRecordsByID(QString strId);
-
+    bool readChargeTable(QString strId);
+    bool ReadChargeRecords(QString strId);
+    bool saveChargeRecords();
+    bool saveChargeTable();
 
 protected:
     QString m_strPrefixion;
     double m_dDueIncome;
     double m_dRealIncome;
-    QSqlTableModel *m_ChargeModel; // 收费单
-    QSqlTableModel *m_ChargeRecordsModel;
-
-
+    Patient m_patient;
+    QVector<ClinicChargeItem*> m_chargeItems;
 };
 
 #endif // CLINICCHARGETABLE_H

@@ -22,7 +22,8 @@ SOURCES += main.cpp\
     histable.cpp \
     persion.cpp \
     patient.cpp \
-    clinicchargetable.cpp
+    clinicchargetable.cpp \
+    clinicchargeitem.cpp
 
 HEADERS  += hismainwindow.h \
     cliniccharge.h \
@@ -34,7 +35,8 @@ HEADERS  += hismainwindow.h \
     persion.h \
     patient.h \
     clinicchargetable.h \
-    connectDB.h
+    connectDB.h \
+    clinicchargeitem.h
 
 FORMS    += hismainwindow.ui \
     cliniccharge.ui \

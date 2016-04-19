@@ -50,6 +50,7 @@ private slots:
     void newTableFile();
 
     void saveTableFile();
+    void findTableFile();
 
 
 private:

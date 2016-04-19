@@ -20,6 +20,7 @@
 #include <QtGui>
 #include <QToolButton>
 #include <QIcon>
+#include <QVector>
 #include "winSet.h"
 
 #endif // STDAFX_H

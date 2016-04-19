@@ -6,8 +6,6 @@ ClinicChargeTable::ClinicChargeTable()
     m_strPrefixion = "CC";
     m_dDueIncome = 0;
     m_dRealIncome = 0;
-    m_ChargeModel = new QSqlTableModel;
-    m_ChargeRecordsModel = new QSqlTableModel;
 }
 
 QString ClinicChargeTable::getID()
@@ -28,9 +26,14 @@ double ClinicChargeTable::getRealImcome() const
     return m_dRealIncome;
 }
 
-QSqlTableModel *ClinicChargeTable::getChargeRecords() const
+Patient ClinicChargeTable::getPatient() const
 {
-    return m_ChargeRecordsModel;
+    return m_patient;
+}
+
+QVector<ClinicChargeItem *> ClinicChargeTable::getChargeItems() const
+{
+    return m_chargeItems;
 }
 
 void ClinicChargeTable::setDueIncome(double d_DueIncome)
@@ -43,12 +46,22 @@ void ClinicChargeTable::setRealIncome(double d_RealIncome)
     this->m_dRealIncome = d_RealIncome;
 }
 
-void ClinicChargeTable::setChargeRecords(QSqlTableModel *ChargeRecordsModel)
+void ClinicChargeTable::setChargeItems(QVector<ClinicChargeItem *> chargeItems)
 {
-    this->m_ChargeRecordsModel = ChargeRecordsModel;
+    m_chargeItems.clear();
+    for(int i = 0; i< chargeItems.size(); i++)
+    {
+        ClinicChargeItem* item = new ClinicChargeItem(chargeItems.at(i));
+        m_chargeItems.append(item);
+    }
 }
 
-bool ClinicChargeTable::findChargeTableByID(QString strId)
+void ClinicChargeTable::setPatient(Patient patient)
+{
+    this->m_patient = patient;
+}
+
+bool ClinicChargeTable::readChargeTable(QString strId)
 {
     if(myDB::connectDB())
     {
@@ -60,14 +73,14 @@ bool ClinicChargeTable::findChargeTableByID(QString strId)
         {
             QSqlRecord record = model->record(i);
             m_strID = record.value("id").toString();
-            m_strName = record.value("name").toString();
-            m_eGender = (Gender)record.value("Gender").toInt();
-            m_nAge = record.value("Age").toInt();
-            m_strIDCard = record.value("IdCardNum").toString();
-            m_strSocialSecurityNum = record.value("SocialSecurityNum").toString();
-            m_eMedicalInsuranceType = (MedicalInsuranceType)record.value("MedicalInsuranceType").toInt();
-            m_strDepartment = record.value("Department").toString();
-            m_strDoctor = record.value("Doctor").toString();
+            m_patient.setName(record.value("name").toString());
+            m_patient.setGender((Gender)record.value("Gender").toInt());
+            m_patient.setAge(record.value("Age").toInt());
+            m_patient.setIDCard(record.value("IdCardNum").toString());
+            m_patient.setSocialSecurityNum(record.value("SocialSecurityNum").toString());
+            m_patient.setMedicalInsuranceType((MedicalInsuranceType)record.value("MedicalInsuranceType").toInt());
+            m_patient.setDepartment(record.value("Department").toString());
+            m_patient.setDoctor(record.value("Doctor").toString());
             m_dDueIncome = record.value("DueIncome").toDouble();
             m_dRealIncome = record.value("RealIncome").toDouble();
         }
@@ -77,13 +90,30 @@ bool ClinicChargeTable::findChargeTableByID(QString strId)
     else
         return false;
 }
-bool ClinicChargeTable::findChargeRecordsByID(QString strId)
+bool ClinicChargeTable::ReadChargeRecords(QString strId)
 {
     if(myDB::connectDB())
     {
-        m_ChargeRecordsModel->setTable("ClinicChargeRecords");
-        m_ChargeRecordsModel->setFilter("CliniChargeId = " + strId);
-        m_ChargeRecordsModel->select();
+        QSqlTableModel *model = new QSqlTableModel;
+        model->setTable("ClinicChargeRecords_1");
+        model->setFilter("CliniChargeId = " + strId);
+        model->select();
+
+        for(int i =0; i < model->rowCount();i++)
+        {
+            QSqlRecord record = model->record(i);
+
+            ClinicChargeItem *item = new ClinicChargeItem;
+            item->setChargeItemNo(record.value("ChargeItemNo").toString());
+            item->setChargeItemName(record.value("ChargeItemName").toString());
+            item->setChargeItemCount(record.value("ChargeItemCount").toInt());
+            item->setChargeItemPrice(record.value("ChargeItemPrice").toDouble());
+            item->setClinicReceipt(record.value("ChinicReceipt").toString());
+            item->setClinicSort(record.value("ClinicSort").toString());
+            item->setClinicChargeId(record.value("CliniChargeId").toString());
+
+            m_chargeItems.append(item);
+        }
 
         return true;
     }
@@ -91,40 +121,33 @@ bool ClinicChargeTable::findChargeRecordsByID(QString strId)
         return false;
 }
 
-void ClinicChargeTable::saveChargeRecords(QStandardItemModel *chargeRecordsmodel)
+bool ClinicChargeTable::saveChargeRecords()
 {
     if(myDB::connectDB())
     {
-        m_ChargeRecordsModel->setTable("ClinicChargeRecords");
-        for(int i = 0; i < chargeRecordsmodel->rowCount(); i++)
+        QSqlTableModel *model = new QSqlTableModel;
+        model->setTable("ClinicChargeRecords_1");
+        for(int i = 0; i < m_chargeItems.size(); i++)
         {
-            m_ChargeRecordsModel->insertRows(i,1);
-            int j =0;
-            for(j = 0; j<chargeRecordsmodel->columnCount(); j++)
-            {
-                QStandardItem *item = chargeRecordsmodel->item(i,j);
-                if(item == NULL)
-                    continue;
-                QString sss = item->text();
-                m_ChargeRecordsModel->setData(m_ChargeRecordsModel->index(i,j),sss);
-                m_ChargeRecordsModel->submit();
-            }
-            m_ChargeRecordsModel->setData(m_ChargeRecordsModel->index(i,j+1),m_strID);
-            m_ChargeRecordsModel->submitAll();
+            int row = i;
+            model->insertRows(row,1);
+            model->setData(model->index(row,0),m_chargeItems.at(i)->getChargeItemNo());
+            model->setData(model->index(row,1),m_chargeItems.at(i)->getChargeItemName());
+            model->setData(model->index(row,2),m_chargeItems.at(i)->getChargeItemCount());
+            model->setData(model->index(row,3),m_chargeItems.at(i)->getChargeItemPrice());
+            model->setData(model->index(row,4),m_chargeItems.at(i)->getClinicReceipt());
+            model->setData(model->index(row,5),m_chargeItems.at(i)->getClinicSort());
+            model->setData(model->index(row,6),m_chargeItems.at(i)->getClinicChargeId());
+            model->submitAll();
         }
-    }
-}
 
-bool ClinicChargeTable::Read()
-{
-    m_strID = "222";
-    if(findChargeTableByID(m_strID))
-        return findChargeRecordsByID(m_strID);
+        return true;
+    }
     else
         return false;
 }
 
-bool ClinicChargeTable::Save()
+bool ClinicChargeTable::saveChargeTable()
 {
     if(myDB::connectDB())
     {
@@ -133,23 +156,47 @@ bool ClinicChargeTable::Save()
         int row =0;
         model->insertRows(row,1);
         model->setData(model->index(row,0),m_strID);
-        model->setData(model->index(row,1),m_strName);
-        model->setData(model->index(row,2),m_eGender);
-        model->setData(model->index(row,3),m_nAge);
-        model->setData(model->index(row,4),m_strIDCard);
-        model->setData(model->index(row,5),m_strSocialSecurityNum);
-        model->setData(model->index(row,6),m_eMedicalInsuranceType);
-        model->setData(model->index(row,7),m_strDepartment);
-        model->setData(model->index(row,8),m_strDoctor);
+        model->setData(model->index(row,1),m_patient.getName());
+        model->setData(model->index(row,2),m_patient.getGender());
+        model->setData(model->index(row,3),m_patient.getAge());
+        model->setData(model->index(row,4),m_patient.getIDCard());
+        model->setData(model->index(row,5),m_patient.getSocialSecurityNum());
+        model->setData(model->index(row,6),m_patient.getMedicalInsuranceType());
+        model->setData(model->index(row,7),m_patient.getDepartment());
+        model->setData(model->index(row,8),m_patient.getDoctor());
         model->setData(model->index(row,9),m_dDueIncome);
         model->setData(model->index(row,10),m_dRealIncome);
         model->setData(model->index(row,11),QDate::currentDate().toString());
         model->submitAll();
-        // 缺少保存收费明细
         return true;
     }
     else
         return false;
+}
+
+bool ClinicChargeTable::Read(QString strId)
+{
+    if(readChargeTable(strId))
+    {
+        return ReadChargeRecords(strId);
+    }
+    else
+        return false;
+}
+
+bool ClinicChargeTable::Save()
+{
+    if(saveChargeTable())
+    {
+        return saveChargeRecords();
+    }
+    else
+        return false;
+}
+
+bool ClinicChargeTable::Find(QString strId)
+{
+    return Read(strId);
 }
 
 bool ClinicChargeTable::Delete()
