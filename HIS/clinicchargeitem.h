@@ -30,6 +30,8 @@ public:
     void setClinicReceipt(QString strClinicReceipt);
     void setClinicSort(QString strClinicSort);
     void setClinicChargeId(QString strClinicChargeId);
+
+    bool isEmptyItem();
 protected:
     QString m_strChargeItemNo;
     QString m_strChargeItemName;

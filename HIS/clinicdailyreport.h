@@ -18,10 +18,10 @@ public:
     ~ClinicDailyReport();
 public slots:
     void newTableFile();
-    void saveTableFile();
+    bool saveTableFile();
     void deleteTableFile();
     void exportTableFile();
-    void findTableFile();
+    bool findTableFile();
     void amendTableFile();
     void previewTableFile();
     void printTableFile();

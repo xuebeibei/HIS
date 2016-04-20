@@ -23,7 +23,8 @@ SOURCES += main.cpp\
     persion.cpp \
     patient.cpp \
     clinicchargetable.cpp \
-    clinicchargeitem.cpp
+    clinicchargeitem.cpp \
+    findclincchargedlg.cpp
 
 HEADERS  += hismainwindow.h \
     cliniccharge.h \
@@ -36,12 +37,14 @@ HEADERS  += hismainwindow.h \
     patient.h \
     clinicchargetable.h \
     connectDB.h \
-    clinicchargeitem.h
+    clinicchargeitem.h \
+    findclincchargedlg.h
 
 FORMS    += hismainwindow.ui \
     cliniccharge.ui \
     clinicdailyreport.ui \
-    subform.ui
+    subform.ui \
+    findclincchargedlg.ui
 
 OTHER_FILES +=
 

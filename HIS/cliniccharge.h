@@ -20,10 +20,10 @@ public:
 
 public slots:
     void newTableFile();
-    void saveTableFile();
+    bool saveTableFile();
     void deleteTableFile();
     void exportTableFile();
-    void findTableFile();
+    bool findTableFile();
     void amendTableFile();
     void previewTableFile();
     void printTableFile();
@@ -35,11 +35,6 @@ private slots:
 private:
 
     void init();
-    void initPatientPart();
-    void initSocialSecurityPart();
-    void initDoctorPart();
-    void initIncomePart();
-    void initChargeTablePart();
     void initTableModel();
     void setAllDefaultEnable();
     void setAllUnEnable();

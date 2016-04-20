@@ -60,7 +60,7 @@ const QString strClinicMenu = "门诊";
 const QString strClinicChargeAction = "门诊收费";
 const QString strClinicDailyReportAction = "门诊日结";
 
-const int nSubFormDefaultWidth = 850;
+const int nSubFormDefaultWidth = 866;
 const int nSubFormDefaultHeight = 600;
 
 //---------------------------------------------------------------------------------------------------------------------------------------
@@ -93,6 +93,11 @@ const QString strRealIncomeLabel = "实收金额：";
 const QString strClinicChargeNumGroup = "收费单信息";
 const QString strClincChargeNumLabel = "收费单号：";
 
-const QString strClinicChargeNumPR = "CC";
+const QString strClinicChargeNumPR = "F";
+
+const QString strChoiseButton = "选择";
+const QString strCancelButton = "取消";
+
+const QString strIconPath = "D:/qtProgram/HIS2.0/HIS/icon/";
 
 #endif // WINSTRING_H

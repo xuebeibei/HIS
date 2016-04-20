@@ -17,7 +17,7 @@ QString ClinicChargeTable::getID()
 
 QString ClinicChargeTable::getNewClinicChargeID()
 {
-    return /*m_strPrefixion + */getNewID();
+    return /*m_strPrefixion +*/ getNewID();
 }
 
 double ClinicChargeTable::getDueIncome() const
@@ -105,7 +105,7 @@ bool ClinicChargeTable::ReadChargeRecords()
     {
         QSqlTableModel *model = new QSqlTableModel;
         model->setTable(strClinicChargeRecords);
-        model->setFilter("ClinicChargeId = " + m_strID);
+        model->setFilter("ChargeId = " + m_strID);
         model->select();
 
         m_chargeItems.clear();
@@ -138,7 +138,7 @@ bool ClinicChargeTable::saveChargeRecords()
         QSqlTableModel *model = new QSqlTableModel;
         model->setTable(strClinicChargeRecords);
         QString strID = m_strID;
-        model->setFilter("ClinicChargeId = " + strID);
+        model->setFilter("ChargeId = " + strID);
         model->select();
         if(model->rowCount()>0)
         {
@@ -227,7 +227,6 @@ bool ClinicChargeTable::Delete()
             return deleteChargeRecords();
         else
             return false;
-
 }
 
 bool ClinicChargeTable::deleteChargeTable()
@@ -239,9 +238,9 @@ bool ClinicChargeTable::deleteChargeTable()
         QString str = m_strID;
         model->setFilter("ID = " + str);
         int n = 0;
-        if(model->select())// select()返回false,无法得到符合条件的数据行数，导致无法删除；原因经查跟ID号码过长有关。
+        if(model->select())// select()返回false,无法得到符合条件的数据行数，导致无法删除；原因经查跟ID号码有前缀并且过长有关。
         {
-            n = model->rowCount();//??
+            n = model->rowCount();
         }
 
         if(n == 1)
@@ -265,12 +264,12 @@ bool ClinicChargeTable::deleteChargeRecords()
         QSqlTableModel *model = new QSqlTableModel;
         model->setTable(strClinicChargeRecords);
         QString strID = m_strID;
-        model->setFilter("ClinicChargeId = " + strID);
+        model->setFilter("ChargeId = " + strID);
 
         int n = 0;
-        if(model->select())// select()返回false,无法得到符合条件的数据行数，导致无法删除；原因经查跟ID号码过长有关。
+        if(model->select())// select()返回false,无法得到符合条件的数据行数，导致无法删除；原因经查跟ID号码有前缀并且过长有关。
         {
-            n = model->rowCount();//??
+            n = model->rowCount();
         }
 
         if(n>0)

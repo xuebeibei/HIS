@@ -2,6 +2,13 @@
 
 ClinicChargeItem::ClinicChargeItem()
 {
+    this->m_strChargeItemNo = strNull;
+    this->m_strChargeItemName = strNull;
+    this->m_nChargeItemCount = 0;
+    this->m_dChargeItemPrice = 0;
+    this->m_strClinicReceipt = strNull;
+    this->m_strClinicSort = strNull;
+    this->m_strClinicChargeId = strNull;
 }
 
 ClinicChargeItem::ClinicChargeItem(QString strChargeItemNo,
@@ -99,4 +106,17 @@ void ClinicChargeItem::setClinicSort(QString strClinicSort)
 void ClinicChargeItem::setClinicChargeId(QString strClinicChargeId)
 {
     this->m_strClinicChargeId = strClinicChargeId;
+}
+
+bool ClinicChargeItem::isEmptyItem()
+{
+    if(this->m_strChargeItemNo.isEmpty()
+            &&this->m_strChargeItemName.isEmpty()
+            &&(this->m_nChargeItemCount == 0)
+            &&(this->m_dChargeItemPrice == 0)
+            &&this->m_strClinicReceipt.isEmpty()
+            &&this->m_strClinicSort.isEmpty())
+        return true;
+    else
+        return false;
 }

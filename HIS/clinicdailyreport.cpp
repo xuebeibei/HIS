@@ -18,9 +18,10 @@ void ClinicDailyReport::newTableFile()
     QMessageBox::information(this,"提示","新建 - 门诊日结");
 }
 
-void ClinicDailyReport::saveTableFile()
+bool ClinicDailyReport::saveTableFile()
 {
     QMessageBox::information(this,"提示","保存 - 门诊日结");
+    return true;
 }
 
 void ClinicDailyReport::deleteTableFile()
@@ -33,9 +34,10 @@ void ClinicDailyReport::exportTableFile()
     QMessageBox::information(this,"提示","导出 - 门诊日结");
 }
 
-void ClinicDailyReport::findTableFile()
+bool ClinicDailyReport::findTableFile()
 {
     QMessageBox::information(this,"提示","查找 - 门诊日结");
+    return true;
 }
 
 void ClinicDailyReport::amendTableFile()

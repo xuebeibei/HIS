@@ -1,6 +1,6 @@
 #include "cliniccharge.h"
 #include "ui_cliniccharge.h"
-
+#include "findclincchargedlg.h"
 
 ClinicCharge::ClinicCharge(SubForm *parent) :
     SubForm(parent),
@@ -12,6 +12,7 @@ ClinicCharge::ClinicCharge(SubForm *parent) :
     init();
     SetMyLayout();
     setAllDefaultEnable();
+    newTableFile();
 }
 
 ClinicCharge::~ClinicCharge()
@@ -27,10 +28,17 @@ void ClinicCharge::newTableFile()
     setAllDefaultEnable();
 }
 
-void ClinicCharge::saveTableFile()
+bool ClinicCharge::saveTableFile()
 {
-    Save();
-    setAllUnEnable();
+    if(Save())
+    {
+        setAllUnEnable();
+        return true;
+    }
+    else
+    {
+        return false;
+    }
 }
 
 void ClinicCharge::deleteTableFile()
@@ -44,12 +52,23 @@ void ClinicCharge::exportTableFile()
     QMessageBox::information(this,"提示","导出门诊收费单");
 }
 
-void ClinicCharge::findTableFile()
+bool ClinicCharge::findTableFile()
 {
-    QMessageBox::information(this,"提示","查询单号为CC2016419185656的收费单");
-    m_chargeTable->setID("CC2016419185656");
-    Read(); // 有待改进，添加更多的查询条件
-    setAllUnEnable();
+    FindClincChargeDlg *findDlg = new FindClincChargeDlg;
+    findDlg->exec();
+    QString strId = findDlg->getId();
+
+    if(strId.isEmpty())
+    {
+        return false;
+    }
+    else
+    {
+//        m_chargeTable->setID(strId);
+//        Read();
+//        setAllUnEnable();
+        return true;
+    }
 }
 
 void ClinicCharge::amendTableFile()
@@ -84,6 +103,8 @@ void ClinicCharge::setAllDefaultEnable()
     deleteRowButton->setEnabled(true);
     comboButton->setEnabled(true);
     m_chargeTableView->setEnabled(true);
+    //将表格中都设置为可编辑
+    //QStandardItemModel
 }
 
 
@@ -103,13 +124,14 @@ void ClinicCharge::setAllUnEnable()
     addRowButton->setEnabled(false);
     deleteRowButton->setEnabled(false);
     comboButton->setEnabled(false);
-    //m_chargeTableView->setEnabled(false);
+    //将表格中都设置为不可编辑
+    //QStandardItemModel
 }
 
 void ClinicCharge::addRow()
 {
     int row = m_chargeRecordsmodel->rowCount();
-    m_chargeRecordsmodel->setItem(row, 5, new QStandardItem(""));
+    m_chargeRecordsmodel->setItem(row, 5,NULL);
 }
 
 void ClinicCharge::deleteRow()
@@ -131,13 +153,35 @@ void ClinicCharge::create()
     CreateChargeTablePart();
     m_chargeTable = new ClinicChargeTable;
 }
+
 void ClinicCharge::init()
 {
-    initPatientPart();
-    initSocialSecurityPart();
-    initDoctorPart();
-    initIncomePart();
-    initChargeTablePart();
+    m_nameEdit->setText(strNull);
+    m_ageEdit->setText(strNull);
+    m_idCardNumEdit->setText(strNull);
+
+    m_socialSecurityNumEdit->setText(strNull);
+
+    m_departmentEdit->setText(strNull);
+    m_doctorEdit->setText(strNull);
+
+    m_dueIncomeEdit->setText(strNull);
+    m_realIncomeEdit->setText(strNull);
+
+    m_chargeNumEdit->setText(strNull);
+    initTableModel();
+}
+
+void ClinicCharge::initTableModel()
+{
+    m_chargeRecordsmodel->clear();
+    m_chargeRecordsmodel->setHorizontalHeaderItem(chargeItemNo, new QStandardItem(QObject::tr("收费项编码")));
+    m_chargeRecordsmodel->setHorizontalHeaderItem(chargeItemName, new QStandardItem(QObject::tr("收费项名称")));
+    m_chargeRecordsmodel->setHorizontalHeaderItem(chargeItemCount, new QStandardItem(QObject::tr("数量")));
+    m_chargeRecordsmodel->setHorizontalHeaderItem(chargeItemPrice, new QStandardItem(QObject::tr("单价")));
+    m_chargeRecordsmodel->setHorizontalHeaderItem(clinicReceipt, new QStandardItem(QObject::tr("门诊收据")));
+    m_chargeRecordsmodel->setHorizontalHeaderItem(clinicSort, new QStandardItem(QObject::tr("门诊分类")));
+    m_chargeRecordsmodel->setItem(0, 5, NULL);
 }
 
 void ClinicCharge::CreatePatientPart()
@@ -148,6 +192,8 @@ void ClinicCharge::CreatePatientPart()
 
     m_genderLabel = new QLabel(strGenderLabel);
     m_genderCombo = new QComboBox;
+    m_genderCombo->addItem(strMan);
+    m_genderCombo->addItem(strWoman);
     m_genderLabel->setBuddy(m_genderCombo);
 
     m_ageLabel = new QLabel(strAgeLabel);
@@ -172,15 +218,6 @@ void ClinicCharge::CreatePatientPart()
     m_patientGroup->setLayout(patientGroupLayout);
 }
 
-void ClinicCharge::initPatientPart()
-{
-    m_nameEdit->setText(strNull);
-    m_genderCombo->addItem(strMan);
-    m_genderCombo->addItem(strWoman);
-    m_ageEdit->setText(strNull);
-    m_idCardNumEdit->setText(strNull);
-}
-
 void ClinicCharge::CreateSocialSecurityPart()
 {
     m_socialSecurityNumLabel = new QLabel(strSocialSecurityNumLabel);
@@ -189,6 +226,9 @@ void ClinicCharge::CreateSocialSecurityPart()
 
     m_medicalInsuranceTypeLabel = new QLabel(strMedicalInsuranceTypeLabel);
     m_medicalInsuranceTypeCombo = new QComboBox;
+    m_medicalInsuranceTypeCombo->addItem(strSelfPay);
+    m_medicalInsuranceTypeCombo->addItem(strMedicare);
+    m_medicalInsuranceTypeCombo->addItem(strNCMS);
     m_medicalInsuranceTypeLabel->setBuddy(m_medicalInsuranceTypeCombo);
 
     m_insuranceGroup = new QGroupBox(strInsuranceGroup);
@@ -198,14 +238,6 @@ void ClinicCharge::CreateSocialSecurityPart()
     insuranceGroupLayout->addWidget(m_medicalInsuranceTypeLabel,1,0);
     insuranceGroupLayout->addWidget(m_medicalInsuranceTypeCombo,1,1);
     m_insuranceGroup->setLayout(insuranceGroupLayout);
-}
-
-void ClinicCharge::initSocialSecurityPart()
-{
-    m_socialSecurityNumEdit->setText(strNull);
-    m_medicalInsuranceTypeCombo->addItem(strSelfPay);
-    m_medicalInsuranceTypeCombo->addItem(strMedicare);
-    m_medicalInsuranceTypeCombo->addItem(strNCMS);
 }
 
 void ClinicCharge::CreateDoctorPart()
@@ -225,12 +257,6 @@ void ClinicCharge::CreateDoctorPart()
     doctorGroupLayout->addWidget(m_doctorLabel,1,0);
     doctorGroupLayout->addWidget(m_doctorEdit,1,1);
     m_doctorGroup->setLayout(doctorGroupLayout);
-}
-
-void ClinicCharge::initDoctorPart()
-{
-    m_departmentEdit->setText(strNull);
-    m_doctorEdit->setText(strNull);
 }
 
 void ClinicCharge::CreateIncomePart()
@@ -253,12 +279,6 @@ void ClinicCharge::CreateIncomePart()
     m_incomeGroup->setLayout(incomeGroupLayout);
 }
 
-void ClinicCharge::initIncomePart()
-{
-    m_dueIncomeEdit->setText(strNull);
-    m_realIncomeEdit->setText(strNull);
-}
-
 void ClinicCharge::CreateChargeTablePart()
 {
     m_chargeNumLabel = new QLabel(strClincChargeNumLabel);
@@ -272,37 +292,19 @@ void ClinicCharge::CreateChargeTablePart()
     m_chargeNumGroup->setLayout(chargeGroupLayout);
 
     addRowButton = new QToolButton;
-    addRowButton->setIcon(QIcon("D:/qtProgram/HIS2.0/HIS/icon/addRow.png"));
+    addRowButton->setIcon(QIcon(strIconPath + "addRow.png"));
     connect(addRowButton, SIGNAL(clicked()), this, SLOT(addRow()));
     deleteRowButton = new QToolButton;
-    deleteRowButton->setIcon(QIcon("D:/qtProgram/HIS2.0/HIS/icon/deleteRow.png"));
+    deleteRowButton->setIcon(QIcon(strIconPath + "deleteRow.png"));
     connect(deleteRowButton, SIGNAL(clicked()), this, SLOT(deleteRow()));
     comboButton = new QToolButton;
-    comboButton->setIcon(QIcon("D:/qtProgram/HIS2.0/HIS/icon/combo.png"));
+    comboButton->setIcon(QIcon(strIconPath + "combo.png"));
     connect(comboButton, SIGNAL(clicked()), this, SLOT(combo()));
 
     m_chargeTableView = new QTableView;
     m_chargeRecordsmodel = new QStandardItemModel;
     m_chargeTableView->setModel(m_chargeRecordsmodel);
     initTableModel();
-}
-
-void ClinicCharge::initChargeTablePart()
-{
-     m_chargeNumEdit->setText(strNull);
-     initTableModel();
-}
-
-void ClinicCharge::initTableModel()
-{
-    m_chargeRecordsmodel->clear();
-    m_chargeRecordsmodel->setHorizontalHeaderItem(chargeItemNo, new QStandardItem(QObject::tr("收费项编码")));
-    m_chargeRecordsmodel->setHorizontalHeaderItem(chargeItemName, new QStandardItem(QObject::tr("收费项名称")));
-    m_chargeRecordsmodel->setHorizontalHeaderItem(chargeItemCount, new QStandardItem(QObject::tr("数量")));
-    m_chargeRecordsmodel->setHorizontalHeaderItem(chargeItemPrice, new QStandardItem(QObject::tr("单价")));
-    m_chargeRecordsmodel->setHorizontalHeaderItem(clinicReceipt, new QStandardItem(QObject::tr("门诊收据")));
-    m_chargeRecordsmodel->setHorizontalHeaderItem(clinicSort, new QStandardItem(QObject::tr("门诊分类")));
-    m_chargeRecordsmodel->setItem(0, 5, new QStandardItem(""));
 }
 
 void ClinicCharge::SetMyLayout()
@@ -370,71 +372,82 @@ bool ClinicCharge::Read()
 
 bool ClinicCharge::Save()
 {
-    QString strChargeNum = m_chargeNumEdit->text();
-    QString strName = m_nameEdit->text();
-    int nAge = m_ageEdit->text().toInt();
+    m_chargeTable->setID(m_chargeNumEdit->text());
 
-    m_chargeTable->setID(strChargeNum);
     Patient onePatient;
-    onePatient.setName(strName);
-    onePatient.setAge(nAge);
+    onePatient.setName(m_nameEdit->text());
+    onePatient.setAge(m_ageEdit->text().toInt());
     onePatient.setIDCard(m_idCardNumEdit->text());
     onePatient.setSocialSecurityNum(m_socialSecurityNumEdit->text());
     onePatient.setMedicalInsuranceType((MedicalInsuranceType)m_medicalInsuranceTypeCombo->currentIndex());
     onePatient.setDepartment(m_departmentEdit->text());
     onePatient.setDoctor(m_doctorEdit->text());
 
+    if(onePatient.getName().isEmpty())
+    {
+        QMessageBox::information(this,"提示","请填写姓名！");
+        return false;
+    }
+
+    if(onePatient.getAge() == 0)
+    {
+        QMessageBox::information(this,"提示","请填写年龄！");
+        return false;
+    }
+
     m_chargeTable->setPatient(onePatient);
     m_chargeTable->setDueIncome(m_dueIncomeEdit->text().toDouble());
     m_chargeTable->setRealIncome(m_realIncomeEdit->text().toDouble());
-    // 将明细显示在界面
+    // 将明细保存起来
     QVector<ClinicChargeItem*> chargeItems;
+
+
     for(int row = 0; row< m_chargeRecordsmodel->rowCount();row++)
     {
         ClinicChargeItem *chargeItem = new ClinicChargeItem;
         for(int column = 0; column < m_chargeRecordsmodel->columnCount();column++)
         {
             QStandardItem *modelItem = m_chargeRecordsmodel->item(row,column);
+
             if(modelItem == NULL)
+            {
                 continue;
+            }
             else
             {
+                QString strData = modelItem->text();
                 switch(column)
                 {
                 case chargeItemNo:
                 {
-                    QString strNo = modelItem->text();
-                    chargeItem->setChargeItemNo(strNo);
+                    chargeItem->setChargeItemNo(strData);
                     break;
                 }
                 case chargeItemName:
                 {
-                    QString strName = modelItem->text();
-                    chargeItem->setChargeItemName(strName);
+                    chargeItem->setChargeItemName(strData);
                     break;
                 }
                 case chargeItemCount:
                 {
-                    int nCount = modelItem->text().toInt();
+                    int nCount = strData.isEmpty() ? 0 : strData.toInt();
                     chargeItem->setChargeItemCount(nCount);
                     break;
                 }
                 case chargeItemPrice:
                 {
-                    double nPrice= modelItem->text().toDouble();
+                    double nPrice= strData.isEmpty() ? 0 : strData.toDouble();
                     chargeItem->setChargeItemPrice(nPrice);
                     break;
                 }
                 case clinicReceipt:
                 {
-                    QString strReceipt = modelItem->text();
-                    chargeItem->setClinicReceipt(strReceipt);
+                    chargeItem->setClinicReceipt(strData);
                     break;
                 }
                 case clinicSort:
                 {
-                    QString strSort = modelItem->text();
-                    chargeItem->setClinicSort(strSort);
+                    chargeItem->setClinicSort(strData);
                     break;
                 }
                 default:
@@ -442,8 +455,17 @@ bool ClinicCharge::Save()
                 }
             }
         }
+        if(chargeItem->isEmptyItem())
+        {
+            continue;
+        }
         chargeItem->setClinicChargeId(m_chargeNumEdit->text());
         chargeItems.append(chargeItem);
+    }
+    if(chargeItems.size() <= 0)
+    {
+        QMessageBox::information(this,"提示","请填写收费列表！");
+        return false;
     }
     m_chargeTable->setChargeItems(chargeItems);
 
@@ -460,13 +482,13 @@ bool ClinicCharge::Delete()
 {
     if(m_chargeTable->Delete())
     {
-        QMessageBox::information(this,"提示","成功删除！");
+        QMessageBox::information(this,"提示","删除成功！");
         newTableFile();
         return true;
     }
     else
     {
-        QMessageBox::information(this,"提示","成功失败！");
+        QMessageBox::information(this,"提示","删除失败！");
         return false;
     }
 }

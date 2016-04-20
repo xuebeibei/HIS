@@ -46,11 +46,12 @@ void HISMainWindow::newTableFile()
 
 void HISMainWindow::saveTableFile()
 {
-    subForm->saveTableFile();
-
-    saveAction->setEnabled(true);
-    deleteAction->setEnabled(true);
-    amendAction->setEnabled(true);
+    if(subForm->saveTableFile())
+    {
+        saveAction->setEnabled(true);
+        deleteAction->setEnabled(true);
+        amendAction->setEnabled(true);
+    }
 }
 
 void HISMainWindow::deleteTableFile()
@@ -68,11 +69,12 @@ void HISMainWindow::exportTableFile()
 
 void HISMainWindow::findTableFile()
 {
-    subForm->findTableFile();
-
-    saveAction->setEnabled(false);
-    deleteAction->setEnabled(true);
-    amendAction->setEnabled(true);
+    if(subForm->findTableFile())
+    {
+        saveAction->setEnabled(false);
+        deleteAction->setEnabled(true);
+        amendAction->setEnabled(true);
+    }
 }
 
 void HISMainWindow::amendTableFile()
