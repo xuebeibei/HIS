@@ -398,10 +398,8 @@ bool ClinicCharge::Save()
     m_chargeTable->setPatient(onePatient);
     m_chargeTable->setDueIncome(m_dueIncomeEdit->text().toDouble());
     m_chargeTable->setRealIncome(m_realIncomeEdit->text().toDouble());
-    // 将明细保存起来
+
     QVector<ClinicChargeItem*> chargeItems;
-
-
     for(int row = 0; row< m_chargeRecordsmodel->rowCount();row++)
     {
         ClinicChargeItem *chargeItem = new ClinicChargeItem;
