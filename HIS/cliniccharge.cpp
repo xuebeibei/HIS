@@ -39,8 +39,15 @@ bool ClinicCharge::saveTableFile()
 
 void ClinicCharge::deleteTableFile()
 {
-    QMessageBox::information(this,"提示","删除门诊收费单");
-    Delete();
+    QMessageBox *box = new QMessageBox;
+    box->setWindowTitle(tr("警告"));
+    box->setIcon(QMessageBox::Warning);
+    box->setText(tr("确认删除？"));
+    box->setStandardButtons(QMessageBox::Yes|QMessageBox::No);
+    if(box->exec()==QMessageBox::Yes)
+    {
+        Delete();
+    }
 }
 
 void ClinicCharge::exportTableFile()

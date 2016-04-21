@@ -18,3 +18,25 @@ QString HISTable::getNewID() const
     return strDate+strCurrentTime;
 }
 
+bool HISTable::deleteRows(QString strTableName, QString strIndexName, QString str) const
+{
+    QSqlTableModel *model = new QSqlTableModel;
+    model->setTable(strTableName);
+    model->setFilter(strIndexName + " = \'" + str + "\'");
+    model->select();
+
+    int n = model->rowCount();
+    bool bResult  = false;
+    if(n>0)
+    {
+        bResult = model->removeRows(0,n);
+        if(bResult == false)
+        {
+            QSqlQuery query;
+            query.prepare("delete from "+ strTableName +" where " + strIndexName +" = \'" + str + "\'");
+            bResult = query.exec();
+        }
+    }
+
+    return bResult;
+}

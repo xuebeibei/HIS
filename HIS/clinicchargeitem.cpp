@@ -34,6 +34,7 @@ ClinicChargeItem::ClinicChargeItem(ClinicChargeItem* chargeItem)
     this->m_strChargeItemName = chargeItem->m_strChargeItemName;
     this->m_nChargeItemCount = chargeItem->m_nChargeItemCount;
     this->m_dChargeItemPrice = chargeItem->m_dChargeItemPrice;
+    this->m_strClinicReceipt = chargeItem->m_strClinicReceipt;
     this->m_strClinicSort = chargeItem->m_strClinicSort;
     this->m_strClinicChargeId = chargeItem->m_strClinicChargeId;
 }

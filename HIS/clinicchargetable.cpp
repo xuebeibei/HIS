@@ -106,7 +106,6 @@ bool ClinicChargeTable::ReadChargeRecords()
         QSqlTableModel *model = new QSqlTableModel;
         model->setTable(strClinicChargeRecords);
         model->setFilter("ChargeId = \'" + m_strID +"\'");
-        //model->setFilter("ChargeId = " + addSingleQuotesToString(m_strID));
         model->select();
 
         m_chargeItems.clear();
@@ -136,15 +135,10 @@ bool ClinicChargeTable::saveChargeRecords()
 {
     if(myDB::connectDB())
     {
+        deleteRows(strClinicChargeRecords,"ChargeId",m_strID);
+
         QSqlTableModel *model = new QSqlTableModel;
         model->setTable(strClinicChargeRecords);
-        QString strID = m_strID;
-        model->setFilter("ChargeId = \'" + strID + "\'");
-        model->select();
-        if(model->rowCount()>0)
-        {
-            model->removeRows(0,model->rowCount());
-        }
 
         for(int i = 0; i < m_chargeItems.size(); i++)
         {
@@ -170,14 +164,10 @@ bool ClinicChargeTable::saveChargeTable()
 {
     if(myDB::connectDB())
     {
+        deleteRows(strClinicCharge,"ID",m_strID);
+
         QSqlTableModel *model = new QSqlTableModel;
         model->setTable(strClinicCharge);
-        model->setFilter("ID = \'" + m_strID +"\'");
-        model->select();
-        if(model->rowCount() == 1)
-        {
-            model->removeRows(0,1);
-        }
 
         int row =0;
         model->insertRows(row,1);
@@ -234,19 +224,7 @@ bool ClinicChargeTable::deleteChargeTable()
 {
     if(myDB::connectDB())
     {
-        QSqlTableModel *model = new QSqlTableModel;
-        model->setTable(strClinicCharge);
-        model->setFilter("ID = \'" + m_strID + "\'");
-        model->select();
-
-        if(model->rowCount() == 1)
-        {
-            model->removeRows(0,1);
-            model->submitAll();
-            return true;
-        }
-        else
-            return false;
+        return deleteRows(strClinicCharge,"ID",m_strID);
     }
     else
         return false;
@@ -257,20 +235,9 @@ bool ClinicChargeTable::deleteChargeRecords()
 {
     if(myDB::connectDB())
     {
-        QSqlTableModel *model = new QSqlTableModel;
-        model->setTable(strClinicChargeRecords);
-        model->setFilter("ChargeId = \'" + m_strID + "\'");
-        model->select();
-
-        if(model->rowCount()>0)
-        {
-            model->removeRows(0, model->rowCount());
-            model->submitAll();
-            return true;
-        }
-        else
-            return false;
+        return deleteRows(strClinicChargeRecords,"ChargeId",m_strID);
     }
     else
         return false;
 }
+
