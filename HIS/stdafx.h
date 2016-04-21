@@ -23,6 +23,8 @@
 #include <QVector>
 #include <QMenuBar>
 #include <QMenu>
+#include <QDateEdit>
+#include <QCalendarWidget>
 #include "winSet.h"
 
 #endif // STDAFX_H

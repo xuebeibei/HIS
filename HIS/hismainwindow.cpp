@@ -6,7 +6,8 @@ HISMainWindow::HISMainWindow(QWidget *parent) :
     createActions();
     createMenus();
     createToolBars();
-    showClinicCharge();
+    //showClinicCharge();
+    showClinicDailyReport();
 }
 
 HISMainWindow::~HISMainWindow()
@@ -30,6 +31,11 @@ void HISMainWindow::showClinicDailyReport()
     initToolsAllEnable();
     subForm = new ClinicDailyReport;
     setCentralWidget(subForm);
+
+    saveAction->setEnabled(true);
+    deleteAction->setEnabled(false);
+    amendAction->setEnabled(false);
+    findAction->setEnabled(false);
 }
 
 void HISMainWindow::newTableFile()

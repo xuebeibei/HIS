@@ -202,7 +202,6 @@ void ClinicCharge::CreatePatientPart()
 
     m_idCardNumLabel = new QLabel(strIdCardLabel);
     m_idCardNumEdit = new QLineEdit;
-    m_idCardNumEdit->setMinimumWidth(nIdCardEditMinWidth);
     m_idCardNumLabel->setBuddy(m_idCardNumEdit);
 
     m_patientGroup = new QGroupBox(strPatientGroup);
@@ -330,7 +329,6 @@ void ClinicCharge::SetMyLayout()
     MainLayout->addLayout(LeftLayout);
     MainLayout->addLayout(RightLayout);
     MainLayout->setStretchFactor(RightLayout,1);
-
     setLayout(MainLayout);
 }
 
