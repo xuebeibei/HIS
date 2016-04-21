@@ -4,10 +4,6 @@
 #include <QDialog>
 #include "stdafx.h"
 
-namespace Ui {
-class FindClincChargeDlg;
-}
-
 //-----------------------------------------------------------------------------------------------------------------------------------
 // 门诊收费 - 查找 - 界面类
 //-----------------------------------------------------------------------------------------------------------------------------------
@@ -53,8 +49,6 @@ protected:
     void init();
 
 private:
-    Ui::FindClincChargeDlg *ui;
-
     QLabel *m_chargeNumLabel;            // 门诊收费单单号
     QLabel *m_nameLabel;                 // 患者姓名
     QLabel *m_genderLabel;               // 患者性别

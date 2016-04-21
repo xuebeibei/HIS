@@ -1,12 +1,9 @@
 #include "findclincchargedlg.h"
-#include "ui_findclincchargedlg.h"
 
 FindClincChargeDlg::FindClincChargeDlg(QWidget *parent) :
-    QDialog(parent),
-    ui(new Ui::FindClincChargeDlg)
+    QDialog(parent)
 {
     m_strId = strNull;
-    ui->setupUi(this);
     create();
     init();
     setMyLayout();
@@ -14,7 +11,7 @@ FindClincChargeDlg::FindClincChargeDlg(QWidget *parent) :
 
 FindClincChargeDlg::~FindClincChargeDlg()
 {
-    delete ui;
+
 }
 
 QString FindClincChargeDlg::getId()

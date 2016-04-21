@@ -41,7 +41,7 @@ enum ChargeItemIndex
 // 数据库
 //---------------------------------------------------------------------------------------------------------------------------------------
 const QString strDBType = "QSQLITE";
-const QString strDBName = "D:/qtProgram/HIS2.0/HIS/sqlite/test.db"; // 问题：想办法改为相对路径
+const QString strDBName = "./sqlite/test.db";
 const QString strClinicCharge = "ClinicCharge";
 const QString strClinicChargeRecords = "ClinicChargeRecords";
 
@@ -108,6 +108,6 @@ const QString strClinicChargeNumPR = "F";
 const QString strChoiseButton = "选择";
 const QString strCancelButton = "取消";
 
-const QString strIconPath = "D:/qtProgram/HIS2.0/HIS/icon/";
+const QString strIconPath = "./icon/";
 
 #endif // WINSTRING_H

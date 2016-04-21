@@ -5,9 +5,6 @@
 #include "stdafx.h"
 #include "subform.h"
 
-namespace Ui {
-class ClinicDailyReport;
-}
 
 //-----------------------------------------------------------------------------------------------------------------------------------
 // 门诊日结界面类
@@ -28,9 +25,6 @@ public slots:
     void amendTableFile();
     void previewTableFile();
     void printTableFile();
-    
-private:
-    Ui::ClinicDailyReport *ui;
 };
 
 #endif // CLINICDAILYREPORT_H

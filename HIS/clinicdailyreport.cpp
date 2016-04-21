@@ -1,16 +1,13 @@
 #include "clinicdailyreport.h"
-#include "ui_clinicdailyreport.h"
 
 ClinicDailyReport::ClinicDailyReport(SubForm *parent) :
-    SubForm(parent),
-    ui(new Ui::ClinicDailyReport)
+    SubForm(parent)
 {
-    ui->setupUi(this);
 }
 
 ClinicDailyReport::~ClinicDailyReport()
 {
-    delete ui;
+
 }
 
 void ClinicDailyReport::newTableFile()

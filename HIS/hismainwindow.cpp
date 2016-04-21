@@ -1,11 +1,8 @@
 #include "hismainwindow.h"
-#include "ui_hismainwindow.h"
 
 HISMainWindow::HISMainWindow(QWidget *parent) :
-    QMainWindow(parent),
-    ui(new Ui::HISMainWindow)
+    QMainWindow(parent)
 {
-    ui->setupUi(this);
     createActions();
     createMenus();
     createToolBars();
@@ -14,7 +11,7 @@ HISMainWindow::HISMainWindow(QWidget *parent) :
 
 HISMainWindow::~HISMainWindow()
 {
-    delete ui;
+
 }
 
 void HISMainWindow::showClinicCharge()

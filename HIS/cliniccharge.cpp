@@ -1,13 +1,9 @@
 #include "cliniccharge.h"
-#include "ui_cliniccharge.h"
 #include "findclincchargedlg.h"
 
 ClinicCharge::ClinicCharge(SubForm *parent) :
-    SubForm(parent),
-    ui(new Ui::ClinicCharge)
+    SubForm(parent)
 {
-    ui->setupUi(this);
-
     create();
     init();
     SetMyLayout();
@@ -17,7 +13,7 @@ ClinicCharge::ClinicCharge(SubForm *parent) :
 
 ClinicCharge::~ClinicCharge()
 {
-    delete ui;
+
 }
 
 void ClinicCharge::newTableFile()

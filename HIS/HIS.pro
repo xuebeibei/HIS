@@ -40,11 +40,7 @@ HEADERS  += hismainwindow.h \
     clinicchargeitem.h \
     findclincchargedlg.h
 
-FORMS    += hismainwindow.ui \
-    cliniccharge.ui \
-    clinicdailyreport.ui \
-    subform.ui \
-    findclincchargedlg.ui
+FORMS    +=
 
 OTHER_FILES +=
 

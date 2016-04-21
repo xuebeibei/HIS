@@ -21,6 +21,8 @@
 #include <QToolButton>
 #include <QIcon>
 #include <QVector>
+#include <QMenuBar>
+#include <QMenu>
 #include "winSet.h"
 
 #endif // STDAFX_H
