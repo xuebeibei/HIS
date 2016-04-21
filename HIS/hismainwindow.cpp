@@ -45,7 +45,7 @@ void HISMainWindow::saveTableFile()
 {
     if(subForm->saveTableFile())
     {
-        saveAction->setEnabled(true);
+        saveAction->setEnabled(false);
         deleteAction->setEnabled(true);
         amendAction->setEnabled(true);
     }

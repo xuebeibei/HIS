@@ -11,8 +11,9 @@
 // 备注：无
 // 时间：2016-04-15
 //-----------------------------------------------------------------------------------------------------------------------------------
-namespace myDB{
-    bool connectDB()
+class myDB{
+public:
+    static bool connectDB()
     {
         QSqlDatabase db = QSqlDatabase::addDatabase(strDBType);
         db.setDatabaseName(strDBName);
@@ -25,6 +26,6 @@ namespace myDB{
             return true;
         }
     }
-}
+};
 
 #endif // CONNECTDB_H

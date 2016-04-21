@@ -1,4 +1,5 @@
 #include "findclincchargedlg.h"
+#include "connectDB.h"
 
 FindClincChargeDlg::FindClincChargeDlg(QWidget *parent) :
     QDialog(parent)
@@ -36,13 +37,18 @@ void FindClincChargeDlg::create()
 
     m_findButton = new QToolButton;
     m_findButton->setIcon(QIcon(strIconPath + "find.png"));
+    connect(m_findButton, SIGNAL(clicked()), this, SLOT(find()));
 
     m_resultsTableView = new QTableView;
     m_resultsModel = new QStandardItemModel;
     m_resultsTableView->setModel(m_resultsModel);
+    m_resultsTableView->setSelectionBehavior(QAbstractItemView::SelectRows);
+    m_resultsTableView->setEditTriggers(QAbstractItemView::NoEditTriggers);
 
     m_choiseButton = new QPushButton(strChoiseButton);
+    connect(m_choiseButton, SIGNAL(clicked()), this, SLOT(choise()));
     m_cancelButton = new QPushButton(strCancelButton);
+    connect(m_cancelButton, SIGNAL(clicked()), this, SLOT(close()));
 }
 
 void FindClincChargeDlg::setMyLayout()
@@ -75,11 +81,68 @@ void FindClincChargeDlg::init()
     m_chargeNumEdit->setText(strNull);
     m_nameEdit->setText(strNull);
     m_genderComboBox->setCurrentIndex(man);
+    initTable();
+}
+
+void FindClincChargeDlg::initTable()
+{
     m_resultsModel->clear();
     m_resultsModel->setHorizontalHeaderItem(0,new QStandardItem(QObject::tr("收费单号")));
-    m_resultsModel->setHorizontalHeaderItem(1,new QStandardItem(QObject::tr("科室")));
-    m_resultsModel->setHorizontalHeaderItem(2,new QStandardItem(QObject::tr("医生")));
-    m_resultsModel->setHorizontalHeaderItem(3,new QStandardItem(QObject::tr("实收款")));
-    m_resultsModel->setHorizontalHeaderItem(4,new QStandardItem(QObject::tr("时间")));
-    m_resultsModel->setItem(0, 4, NULL);
+    m_resultsModel->setHorizontalHeaderItem(1,new QStandardItem(QObject::tr("时间")));
+    m_resultsModel->setHorizontalHeaderItem(2,new QStandardItem(QObject::tr("姓名")));
+    m_resultsModel->setHorizontalHeaderItem(3,new QStandardItem(QObject::tr("科室")));
+    m_resultsModel->setHorizontalHeaderItem(4,new QStandardItem(QObject::tr("医生")));
+    m_resultsModel->setItem(0, 3, NULL);
+}
+
+void FindClincChargeDlg::find()
+{
+    initTable();
+    QString strId = m_chargeNumEdit->text();
+    QString strName = m_nameEdit->text();
+    Gender eGender = (Gender)m_genderComboBox->currentIndex();
+    if(myDB::connectDB())
+    {
+        QSqlTableModel *model = new QSqlTableModel;
+        model->setTable(strClinicCharge);
+        QString strSql = "" , strTemp = "";
+
+        strTemp = "Gender = " + QString::number((int)eGender);
+        strSql += strTemp;
+
+        if(!strId.isEmpty())
+        {
+            strTemp = " and ID = \'" + strId + "\'";
+            strSql += strTemp;
+        }
+        if(!strName.isEmpty())
+        {
+            strTemp = " and Name = \'" + strName + "\'";
+            strSql += strTemp;
+        }
+
+        model->setFilter(strSql);
+        model->select();
+
+        for(int i = 0; i < model->rowCount();i++)
+        {
+            QSqlRecord record = model->record(i);
+            m_resultsModel->setItem(i,0,new QStandardItem(record.value("ID").toString()));
+            m_resultsModel->setItem(i,1,new QStandardItem(record.value("Time").toString()));
+            m_resultsModel->setItem(i,2,new QStandardItem(record.value("Name").toString()));
+            m_resultsModel->setItem(i,3,new QStandardItem(record.value("Department").toString()));
+            m_resultsModel->setItem(i,4,new QStandardItem(record.value("Doctor").toString()));
+        }
+    }
+}
+
+void FindClincChargeDlg::choise()
+{
+    QModelIndex index = m_resultsTableView->currentIndex();
+    if(index.isValid())
+    {
+        QStandardItem *item = m_resultsModel->item(index.row(),0);
+        m_strId = item->text();
+        close();
+    }
 }
