@@ -60,9 +60,9 @@ bool ClinicCharge::findTableFile()
     }
     else
     {
-//        m_chargeTable->setID(strId);
-//        Read();
-//        setAllUnEnable();
+        m_chargeTable->setID(strId);
+        Read();
+        setAllUnEnable();
         return true;
     }
 }
@@ -98,9 +98,7 @@ void ClinicCharge::setAllDefaultEnable()
     addRowButton->setEnabled(true);
     deleteRowButton->setEnabled(true);
     comboButton->setEnabled(true);
-    m_chargeTableView->setEnabled(true);
-    //将表格中都设置为可编辑
-    //QStandardItemModel
+    m_chargeTableView->setEditTriggers(QAbstractItemView::DoubleClicked);
 }
 
 
@@ -120,8 +118,7 @@ void ClinicCharge::setAllUnEnable()
     addRowButton->setEnabled(false);
     deleteRowButton->setEnabled(false);
     comboButton->setEnabled(false);
-    //将表格中都设置为不可编辑
-    //QStandardItemModel
+    m_chargeTableView->setEditTriggers(QAbstractItemView::NoEditTriggers);
 }
 
 void ClinicCharge::addRow()
