@@ -1,8 +1,6 @@
 INPUT(
 ./release\main.o
 ./release\hismainwindow.o
-./release\cliniccharge.o
-./release\clinicdailyreport.o
 ./release\subform.o
 ./release\histable.o
 ./release\persion.o
@@ -10,9 +8,12 @@ INPUT(
 ./release\clinicchargetable.o
 ./release\clinicchargeitem.o
 ./release\findclincchargedlg.o
+./release\clinicchargeform.o
+./release\clinicdailyreportform.o
+./release\clinicdailyreporttable.o
 ./release\moc_hismainwindow.o
-./release\moc_cliniccharge.o
-./release\moc_clinicdailyreport.o
 ./release\moc_subform.o
 ./release\moc_findclincchargedlg.o
+./release\moc_clinicchargeform.o
+./release\moc_clinicdailyreportform.o
 );

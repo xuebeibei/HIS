@@ -25,6 +25,8 @@
 #include <QMenu>
 #include <QDateEdit>
 #include <QCalendarWidget>
+#include <QtPrintSupport/QPrinter>
+#include <QtPrintSupport/QPrintDialog>
 #include "winSet.h"
 
 #endif // STDAFX_H

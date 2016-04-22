@@ -3,8 +3,8 @@
 
 #include <QMainWindow>
 #include "stdafx.h"
-#include "cliniccharge.h"
-#include "clinicdailyreport.h"
+#include "clinicchargeform.h"
+#include "clinicdailyreportform.h"
 
 //-----------------------------------------------------------------------------------------------------------------------------------
 // HIS系统主界面类

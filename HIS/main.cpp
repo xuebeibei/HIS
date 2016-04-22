@@ -1,5 +1,5 @@
 #include "hismainwindow.h"
-#include "cliniccharge.h"
+//#include "clinicchargeform.h"
 #include <QApplication>
 
 int main(int argc, char *argv[])

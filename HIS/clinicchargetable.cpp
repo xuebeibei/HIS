@@ -182,7 +182,7 @@ bool ClinicChargeTable::saveChargeTable()
         model->setData(model->index(row,8),m_patient.getDoctor());
         model->setData(model->index(row,9),m_dDueIncome);
         model->setData(model->index(row,10),m_dRealIncome);
-        model->setData(model->index(row,11),QDate::currentDate().toString());
+        model->setData(model->index(row,11),QDateTime::currentDateTime());
         model->submitAll();
         return true;
     }

@@ -18,7 +18,7 @@ HISMainWindow::~HISMainWindow()
 void HISMainWindow::showClinicCharge()
 {
     initToolsAllEnable();
-    subForm = new ClinicCharge;
+    subForm = new ClinicChargeForm;
     setCentralWidget(subForm);
 
     saveAction->setEnabled(true);
@@ -29,7 +29,7 @@ void HISMainWindow::showClinicCharge()
 void HISMainWindow::showClinicDailyReport()
 {
     initToolsAllEnable();
-    subForm = new ClinicDailyReport;
+    subForm = new ClinicDailyReportFrom;
     setCentralWidget(subForm);
 
     saveAction->setEnabled(true);
@@ -96,6 +96,9 @@ void HISMainWindow::previewTableFile()
 
 void HISMainWindow::printTableFile()
 {
+//    QPrinter   printer( QPrinter::PrinterResolution );
+//    QPrintDialog   dialog( &printer, this );
+//    if ( dialog.exec() == QDialog::Accepted ) print( &printer );
     subForm->printTableFile();
 }
 

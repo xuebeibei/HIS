@@ -1,8 +1,6 @@
 INPUT(
 ./debug\main.o
 ./debug\hismainwindow.o
-./debug\cliniccharge.o
-./debug\clinicdailyreport.o
 ./debug\subform.o
 ./debug\histable.o
 ./debug\persion.o
@@ -10,9 +8,12 @@ INPUT(
 ./debug\clinicchargetable.o
 ./debug\clinicchargeitem.o
 ./debug\findclincchargedlg.o
+./debug\clinicchargeform.o
+./debug\clinicdailyreportform.o
+./debug\clinicdailyreporttable.o
 ./debug\moc_hismainwindow.o
-./debug\moc_cliniccharge.o
-./debug\moc_clinicdailyreport.o
 ./debug\moc_subform.o
 ./debug\moc_findclincchargedlg.o
+./debug\moc_clinicchargeform.o
+./debug\moc_clinicdailyreportform.o
 );

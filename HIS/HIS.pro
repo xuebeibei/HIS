@@ -16,20 +16,19 @@ TEMPLATE = app
 
 SOURCES += main.cpp\
         hismainwindow.cpp \
-    cliniccharge.cpp \
-    clinicdailyreport.cpp \
     subform.cpp \
     histable.cpp \
     persion.cpp \
     patient.cpp \
     clinicchargetable.cpp \
     clinicchargeitem.cpp \
-    findclincchargedlg.cpp
+    findclincchargedlg.cpp \
+    clinicchargeform.cpp \
+    clinicdailyreportform.cpp \
+    clinicdailyreporttable.cpp
 
 HEADERS  += hismainwindow.h \
-    cliniccharge.h \
     stdafx.h \
-    clinicdailyreport.h \
     subform.h \
     winSet.h \
     histable.h \
@@ -38,7 +37,10 @@ HEADERS  += hismainwindow.h \
     clinicchargetable.h \
     connectDB.h \
     clinicchargeitem.h \
-    findclincchargedlg.h
+    findclincchargedlg.h \
+    clinicchargeform.h \
+    clinicdailyreportform.h \
+    clinicdailyreporttable.h
 
 FORMS    +=
 

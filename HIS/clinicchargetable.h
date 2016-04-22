@@ -212,7 +212,7 @@ protected:
 
 protected:
     QString m_strID;                          // 收费单单号
-    QString m_strPrefixion;                   // 收费单单号前缀，但是加上签注 model->select()返回失败，带商讨
+    QString m_strPrefixion;                   // 收费单单号前缀
     double m_dDueIncome;                      // 应收金额
     double m_dRealIncome;                     // 实收金额
     Patient m_patient;                        // 患者
