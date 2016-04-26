@@ -7,7 +7,6 @@ ClinicChargeTable::ClinicChargeTable()
     m_dDueIncome = 0;
     m_dRealIncome = 0;
     m_strID = getNewClinicChargeID();
-    m_time = QDateTime::currentDateTime();
     m_chargeItems.clear();
 }
 
@@ -39,11 +38,6 @@ Patient ClinicChargeTable::getPatient() const
 QVector<ClinicChargeItem *> ClinicChargeTable::getChargeItems() const
 {
     return m_chargeItems;
-}
-
-QDateTime ClinicChargeTable::getTime() const
-{
-    return m_time;
 }
 
 void ClinicChargeTable::setID(QString strID)
@@ -96,7 +90,6 @@ bool ClinicChargeTable::readChargeTable()
             m_patient.setMedicalInsuranceType((MedicalInsuranceType)record.value("MedicalInsuranceType").toInt());
             m_patient.setDepartment(record.value("Department").toString());
             m_patient.setDoctor(record.value("Doctor").toString());
-            m_time = record.value("Time").toDateTime();
             m_dDueIncome = record.value("DueIncome").toDouble();
             m_dRealIncome = record.value("RealIncome").toDouble();
         }
@@ -189,9 +182,7 @@ bool ClinicChargeTable::saveChargeTable()
         model->setData(model->index(row,8),m_patient.getDoctor());
         model->setData(model->index(row,9),m_dDueIncome);
         model->setData(model->index(row,10),m_dRealIncome);
-        //model->setData(model->index(row,11),QDateTime::currentDateTime());
-        //m_time.setDate(record.value("Time").toDateTime());
-        model->setData(model->index(row,11),m_time);
+        model->setData(model->index(row,11),QDateTime::currentDateTime());
         model->submitAll();
         return true;
     }

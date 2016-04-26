@@ -37,7 +37,7 @@ bool ClinicChargeForm::saveTableFile()
     }
 }
 
-bool ClinicChargeForm::deleteTableFile()
+void ClinicChargeForm::deleteTableFile()
 {
     QMessageBox *box = new QMessageBox;
     box->setWindowTitle(tr("警告"));
@@ -46,11 +46,7 @@ bool ClinicChargeForm::deleteTableFile()
     box->setStandardButtons(QMessageBox::Yes|QMessageBox::No);
     if(box->exec()==QMessageBox::Yes)
     {
-        return Delete();
-    }
-    else
-    {
-        return false;
+        Delete();
     }
 }
 
