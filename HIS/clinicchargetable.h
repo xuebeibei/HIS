@@ -78,6 +78,8 @@ public:
     //-----------------------------------------------------------------------------------------------------------------------------------
     QVector<ClinicChargeItem*> getChargeItems() const;
 
+    QDateTime getTime() const;
+
     //-----------------------------------------------------------------------------------------------------------------------------------
     // 名称：setID
     // 作用：设置收费单号
@@ -216,6 +218,7 @@ protected:
     double m_dDueIncome;                      // 应收金额
     double m_dRealIncome;                     // 实收金额
     Patient m_patient;                        // 患者
+    QDateTime m_time;                         // 时间
     QVector<ClinicChargeItem*> m_chargeItems; // 收费明细列表
 };
 

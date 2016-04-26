@@ -35,7 +35,6 @@ void HISMainWindow::showClinicDailyReport()
     saveAction->setEnabled(true);
     deleteAction->setEnabled(false);
     amendAction->setEnabled(false);
-    findAction->setEnabled(false);
 }
 
 void HISMainWindow::newTableFile()
