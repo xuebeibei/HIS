@@ -45,19 +45,20 @@ bool ClinicDailyReportTable::Delete()
 {
     if(myDB::connectDB())
     {
-        QSqlTableModel *model = new QSqlTableModel;
-        model->setTable(strClinicDailyReport);
-        model->setFilter("Id = \'" + m_strId + "\'");
-        model->select();
+//        QSqlTableModel *model = new QSqlTableModel;
+//        model->setTable(strClinicDailyReport);
+//        model->setFilter("Id = \'" + m_strId + "\'");
+//        model->select();
 
-        if(model->rowCount() == 1)
-        {
-            bool isOk = model->removeRows(0,1);
+//        if(model->rowCount() == 1)
+//        {
+//            bool isOk = model->removeRows(0,1);
 
-            return isOk;
-        }
-        else
-            return false;
+//            return isOk;
+//        }
+//        else
+//            return false;
+        return deleteRows(strClinicDailyReport,"Id",m_strId);
     }
     else
         return false;
@@ -140,7 +141,9 @@ bool ClinicDailyReportTable::readCharges()
     {
         QSqlTableModel *model = new QSqlTableModel;
         model->setTable(strClinicCharge);
-        //model->setFilter("Time between" +  + "\'");
+        QString strStartTime = m_date.toString("yyyy-MM-dd") + "T00:00:00";
+        QString strEndTime = m_date.toString("yyyy-MM-dd") + "T23:59:59";
+        model->setFilter("Time between \'" + strStartTime + "\' and \'" +strEndTime +"\'");
         model->select();
 
         for(int i = 0; i < model->rowCount(); i++)

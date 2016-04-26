@@ -21,7 +21,7 @@ public slots:
 
     void newTableFile();
     bool saveTableFile();
-    void deleteTableFile();
+    bool deleteTableFile();
     void exportTableFile();
     bool findTableFile();
     void amendTableFile();
