@@ -5,10 +5,9 @@ ClinicDailyReportFrom::ClinicDailyReportFrom(SubForm *parent) :
     SubForm(parent)
 {
     create();
-    init();
     setMyLayout();
     setAllDefaultEnable();
-    newTableFile();
+    init();
 }
 
 ClinicDailyReportFrom::~ClinicDailyReportFrom()
@@ -18,19 +17,44 @@ ClinicDailyReportFrom::~ClinicDailyReportFrom()
 
 void ClinicDailyReportFrom::newTableFile()
 {
+    setAllDefaultEnable();
+    QDate dTemp = m_dateEdit->date();
     m_dailyReportTable = new ClinicDailyReportTable;
+    m_dailyReportTable->setDate(dTemp);
     Read();
 }
 
 bool ClinicDailyReportFrom::saveTableFile()
 {
-    QMessageBox::information(this,"提示","保存 - 门诊日结");
-    return true;
+    if(Save())
+    {
+        QMessageBox::information(this,"提示","保存成功！");
+        setAllUnEnable();
+        return true;
+    }
+    else
+    {
+        QMessageBox::information(this,"提示","保存失败！");
+        return false;
+    }
+
 }
 
-void ClinicDailyReportFrom::deleteTableFile()
+bool ClinicDailyReportFrom::deleteTableFile()
 {
-    QMessageBox::information(this,"提示","删除 - 门诊日结");
+    QMessageBox *box = new QMessageBox;
+    box->setWindowTitle(tr("警告"));
+    box->setIcon(QMessageBox::Warning);
+    box->setText(tr("确认删除？"));
+    box->setStandardButtons(QMessageBox::Yes|QMessageBox::No);
+    if(box->exec()==QMessageBox::Yes)
+    {
+        return Delete();
+    }
+    else
+    {
+        return false;
+    }
 }
 
 void ClinicDailyReportFrom::exportTableFile()
@@ -61,8 +85,7 @@ void ClinicDailyReportFrom::printTableFile()
 
 void ClinicDailyReportFrom::find()
 {
-    // 根据日期变更，更新日结信息
-    //QMessageBox::information(this,"提示","查询 - 门诊日结");
+    newTableFile();
 }
 
 void ClinicDailyReportFrom::updateIncome()
@@ -93,6 +116,8 @@ void ClinicDailyReportFrom::create()
 
     m_dateLabel = new QLabel("日结日期：");
     m_dateEdit = new QDateEdit;
+    m_dateEdit->setCalendarPopup(true);
+    m_dateEdit->setMaximumDate(QDate::currentDate());
     connect(m_dateEdit, SIGNAL(dateChanged(QDate)), this, SLOT(find()));
 
     m_allDueIncomeLabel = new QLabel("应收合计：");
@@ -103,7 +128,6 @@ void ClinicDailyReportFrom::create()
     m_allRealIncomeEdit = new QLineEdit;
     m_allDebtEdit = new QLineEdit;
 
-
     m_dailyReportView = new QTableView;
     m_dailyReportModel = new QStandardItemModel;
     m_dailyReportView->setModel(m_dailyReportModel);
@@ -113,8 +137,8 @@ void ClinicDailyReportFrom::create()
 void ClinicDailyReportFrom::init()
 {
     m_dailyReportNumEdit->setText(strNull);
-    m_dateEdit->setDate(QDate::currentDate());
     initTable();
+    m_dateEdit->setDate(QDate::currentDate());
 }
 
 void ClinicDailyReportFrom::initTable()
@@ -149,6 +173,7 @@ void ClinicDailyReportFrom::setMyLayout()
     IncomeLayout->addWidget(m_allDebtEdit,2,1);
     IncomeGroup->setLayout(IncomeLayout);
 
+
     QVBoxLayout *LeftLayout = new QVBoxLayout;
     LeftLayout->addWidget(topGroup);
     LeftLayout->addWidget(IncomeGroup);
@@ -170,9 +195,20 @@ void ClinicDailyReportFrom::setAllDefaultEnable()
     m_allDueIncomeEdit->setEnabled(false);
     m_allRealIncomeEdit->setEnabled(false);
     m_allDebtEdit->setEnabled(false);
+    m_dateEdit->setEnabled(true);
 
     m_dailyReportView->setEditTriggers(QAbstractItemView::NoEditTriggers);
+}
 
+void ClinicDailyReportFrom::setAllUnEnable()
+{
+    m_dailyReportNumEdit->setEnabled(false);
+    m_allDueIncomeEdit->setEnabled(false);
+    m_allRealIncomeEdit->setEnabled(false);
+    m_allDebtEdit->setEnabled(false);
+    m_dateEdit->setEnabled(false);
+
+    m_dailyReportView->setEditTriggers(QAbstractItemView::NoEditTriggers);
 }
 
 bool ClinicDailyReportFrom::Read()
@@ -187,25 +223,46 @@ bool ClinicDailyReportFrom::Read()
         m_allRealIncomeEdit->setText(QString::number(m_dailyReportTable->getAllRealIncome()));
         m_allDebtEdit->setText(QString::number(m_dailyReportTable->getAllDebt()));
 
-        QStringList dailyReoprt = m_dailyReportTable->getdailyReport();
-
-        for(int index = 0; index < dailyReoprt.size(); index++)
+        initTable();
+        for(int index = 0; index < m_dailyReportTable->getdailyReport().size(); index++)
         {
-            QString item = dailyReoprt.at(index);
+            QString item = m_dailyReportTable->getdailyReport().at(index);
             ClinicChargeTable charge;
             charge.setID(item);
             charge.Read();
 
             m_dailyReportModel->setItem(index, 0, new QStandardItem(charge.getID()));
-            m_dailyReportModel->setItem(index, 1, new QStandardItem(""));
+            m_dailyReportModel->setItem(index, 1, new QStandardItem(charge.getTime().toString("yyyy-MM-dd hh:mm:ss")));
             m_dailyReportModel->setItem(index, 2, new QStandardItem(QString::number(charge.getDueIncome())));
             m_dailyReportModel->setItem(index, 3, new QStandardItem(QString::number(charge.getRealImcome())));
             m_dailyReportModel->setItem(index, 4, new QStandardItem(QString::number(charge.getDueIncome() - charge.getRealImcome())));
         }
         return true;
-
     }
     else
         return false;
+}
 
+bool ClinicDailyReportFrom::Save()
+{
+    m_dailyReportTable->setAllDueIncome(m_allDueIncomeEdit->text().toDouble());
+    m_dailyReportTable->setAllRealIncome(m_allRealIncomeEdit->text().toDouble());
+    m_dailyReportTable->setAllDebt(m_allDebtEdit->text().toDouble());
+    return m_dailyReportTable->Save();
+}
+
+bool ClinicDailyReportFrom::Delete()
+{
+
+    if(m_dailyReportTable->Delete())
+    {
+        newTableFile();
+        QMessageBox::information(this,"提示","删除成功！");
+        return true;
+    }
+    else
+    {
+        QMessageBox::information(this,"提示","删除失败！");
+        return false;
+    }
 }

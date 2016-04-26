@@ -20,7 +20,7 @@ public:
 public slots:
     void newTableFile();
     bool saveTableFile();
-    void deleteTableFile();
+    bool deleteTableFile();
     void exportTableFile();
     bool findTableFile();
     void amendTableFile();
@@ -35,8 +35,11 @@ protected:
     void initTable();
     void setMyLayout();
     void setAllDefaultEnable();
+    void setAllUnEnable();
 
     bool Read();
+    bool Save();
+    bool Delete();
 protected:
     QLabel *m_dailyReportNumLabel;
     QLineEdit *m_dailyReportNumEdit;
@@ -51,7 +54,6 @@ protected:
     QLineEdit *m_allDueIncomeEdit;
     QLineEdit *m_allRealIncomeEdit;
     QLineEdit *m_allDebtEdit;
-
 
     QTableView *m_dailyReportView;
     QStandardItemModel *m_dailyReportModel;
