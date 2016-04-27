@@ -7,7 +7,8 @@ HISMainWindow::HISMainWindow(QWidget *parent) :
     createMenus();
     createToolBars();
     //showClinicCharge();
-    showClinicDailyReport();
+    //showClinicDailyReport();
+    showClinicInternalPayment();
 }
 
 HISMainWindow::~HISMainWindow()
@@ -35,6 +36,20 @@ void HISMainWindow::showClinicDailyReport()
     saveAction->setEnabled(true);
     deleteAction->setEnabled(false);
     amendAction->setEnabled(false);
+    findAction->setEnabled(false);
+}
+
+void HISMainWindow::showClinicInternalPayment()
+{
+    initToolsAllEnable();
+    subForm = new ClinicInternalPaymentForm;
+    setCentralWidget(subForm);
+
+    newAction->setEnabled(false);
+    deleteAction->setEnabled(false);
+    amendAction->setEnabled(false);
+    findAction->setEnabled(false);
+    saveAction->setEnabled(false);
 }
 
 void HISMainWindow::newTableFile()
@@ -110,6 +125,10 @@ void HISMainWindow::createActions()
     clinicDailyReportAction = new QAction(strClinicDailyReportAction,this);
     connect(clinicDailyReportAction, SIGNAL(triggered()), this, SLOT(showClinicDailyReport()));
 
+    clinicInternalPaymentAction = new QAction(strClinicInternalPaymentAction,this);
+    connect(clinicInternalPaymentAction, SIGNAL(triggered()), this, SLOT(showClinicInternalPayment()));
+
+
     newAction = new QAction(strNewAction,this);
     connect(newAction, SIGNAL(triggered()), this, SLOT(newTableFile()));
 
@@ -140,6 +159,7 @@ void HISMainWindow::createMenus()
     clinicMenu = menuBar()->addMenu(strClinicMenu);
     clinicMenu->addAction(clinicChargeAction);
     clinicMenu->addAction(clinicDailyReportAction);
+    clinicMenu->addAction(clinicInternalPaymentAction);
 }
 
 void HISMainWindow::createToolBars()

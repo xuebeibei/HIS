@@ -14,54 +14,18 @@ ClinicDailyReportTable::ClinicDailyReportTable()
 bool ClinicDailyReportTable::Read()
 {
     readDailyReport();
-    readCharges();
+    selectClinicChargesByDate(m_date);
     return true;
 }
 
 bool ClinicDailyReportTable::Save()
 {
-    Delete();
-    if(myDB::connectDB())
-    {
-        QSqlTableModel *model = new QSqlTableModel;
-        model->setTable(strClinicDailyReport);
-
-        int row =0;
-        model->insertRows(row,1);
-        model->setData(model->index(row,0),m_strId);
-        model->setData(model->index(row,1),m_date.toString());
-        model->setData(model->index(row,2),QString::number(m_dAllDueIncome));
-        model->setData(model->index(row,3),QString::number(m_dAllRealIncome));
-        model->setData(model->index(row,4),QDateTime::currentDateTime());
-        model->setData(model->index(row,5),m_strMaker);
-        model->submitAll();
-        return true;
-    }
-    else
-        return false;
+    return saveDailyReport();
 }
 
 bool ClinicDailyReportTable::Delete()
 {
-    if(myDB::connectDB())
-    {
-//        QSqlTableModel *model = new QSqlTableModel;
-//        model->setTable(strClinicDailyReport);
-//        model->setFilter("Id = \'" + m_strId + "\'");
-//        model->select();
-
-//        if(model->rowCount() == 1)
-//        {
-//            bool isOk = model->removeRows(0,1);
-
-//            return isOk;
-//        }
-//        else
-//            return false;
-        return deleteRows(strClinicDailyReport,"Id",m_strId);
-    }
-    else
-        return false;
+    return deleteDailyReport();
 }
 
 QString ClinicDailyReportTable::getId() const
@@ -94,9 +58,9 @@ QDate ClinicDailyReportTable::getdate() const
     return m_date;
 }
 
-QStringList ClinicDailyReportTable::getdailyReport() const
+QVector<ClinicChargeTable*> ClinicDailyReportTable::getDailyReport() const
 {
-    return m_listCharges;
+    return m_vecDailyReportDetails;
 }
 
 void ClinicDailyReportTable::setId(QString strId)
@@ -129,20 +93,50 @@ void ClinicDailyReportTable::setDate(QDate date)
     this->m_date = date;
 }
 
-void ClinicDailyReportTable::setDailyReport(QStringList listCharges)
+void ClinicDailyReportTable::setDailyReport(QVector<ClinicChargeTable*> vecDailyReportDetails)
 {
-    this->m_listCharges = listCharges;
+    m_vecDailyReportDetails.clear();
+    for(int i = 0; i < vecDailyReportDetails.size(); i++)
+    {
+        ClinicChargeTable *chargeTable = vecDailyReportDetails.at(i);
+        m_vecDailyReportDetails.append(chargeTable);
+    }
 }
 
+QVector<ClinicDailyReportTable*> ClinicDailyReportTable::getRecord(QDate date)
+{
+    QVector<ClinicDailyReportTable*> list;
+    if(myDB::connectDB())
+    {
+        QSqlTableModel *model = new QSqlTableModel;
+        model->setTable(strClinicDailyReport);
+        QString strStartTime = date.toString("yyyy-MM-dd") + "T00:00:00";
+        QString strEndTime = date.toString("yyyy-MM-dd") + "T23:59:59";
+        model->setFilter("ReportTime between \'" + strStartTime + "\' and \'" +strEndTime +"\'");
+        model->select();
 
-bool ClinicDailyReportTable::readCharges()
+        for(int i = 0; i < model->rowCount(); i++)
+        {
+            ClinicDailyReportTable *table = new ClinicDailyReportTable;
+            QSqlRecord record = model->record(i);
+            table->setId(record.value("Id").toString());
+            table->setDate(record.value("Date").toDate());
+            table->setAllDueIncome(record.value("AllDueIncome").toDouble());
+            table->setAllRealIncome(record.value("AllRealIncome").toDouble());
+            list.append(table);
+        }
+    }
+    return list;
+}
+
+bool ClinicDailyReportTable::selectClinicChargesByDate(QDate date)
 {
     if(myDB::connectDB())
     {
         QSqlTableModel *model = new QSqlTableModel;
         model->setTable(strClinicCharge);
-        QString strStartTime = m_date.toString("yyyy-MM-dd") + "T00:00:00";
-        QString strEndTime = m_date.toString("yyyy-MM-dd") + "T23:59:59";
+        QString strStartTime = date.toString("yyyy-MM-dd") + "T00:00:00";
+        QString strEndTime = date.toString("yyyy-MM-dd") + "T23:59:59";
         model->setFilter("Time between \'" + strStartTime + "\' and \'" +strEndTime +"\'");
         model->select();
 
@@ -150,7 +144,10 @@ bool ClinicDailyReportTable::readCharges()
         {
             QSqlRecord record = model->record(i);
             QString strChargeId = record.value("ID").toString();
-            m_listCharges.append(strChargeId);
+            ClinicChargeTable *charge = new ClinicChargeTable;
+            charge->setID(strChargeId);
+            charge->Read();
+            m_vecDailyReportDetails.append(charge);
         }
         return true;
     }
@@ -179,6 +176,39 @@ bool ClinicDailyReportTable::readDailyReport()
 
         }
         return true;
+    }
+    else
+        return false;
+}
+
+bool ClinicDailyReportTable::saveDailyReport()
+{
+    deleteDailyReport();
+    if(myDB::connectDB())
+    {
+        QSqlTableModel *model = new QSqlTableModel;
+        model->setTable(strClinicDailyReport);
+
+        int row =0;
+        model->insertRows(row,1);
+        model->setData(model->index(row,0),m_strId);
+        model->setData(model->index(row,1),m_date.toString("yyyy-MM-dd"));
+        model->setData(model->index(row,2),QDateTime::currentDateTime());
+        model->setData(model->index(row,3),QString::number(m_dAllDueIncome));
+        model->setData(model->index(row,4),QString::number(m_dAllRealIncome));
+        model->setData(model->index(row,5),m_strMaker);
+        model->submitAll();
+        return true;
+    }
+    else
+        return false;
+}
+
+bool ClinicDailyReportTable::deleteDailyReport()
+{
+    if(myDB::connectDB())
+    {
+        return deleteRows(strClinicDailyReport,"Id",m_strId);
     }
     else
         return false;

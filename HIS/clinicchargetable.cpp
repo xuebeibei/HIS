@@ -9,6 +9,7 @@ ClinicChargeTable::ClinicChargeTable()
     m_strID = getNewClinicChargeID();
     m_time = QDateTime::currentDateTime();
     m_chargeItems.clear();
+    m_strMaker = "maker";
 }
 
 QString ClinicChargeTable::getID()
@@ -99,6 +100,7 @@ bool ClinicChargeTable::readChargeTable()
             m_time = record.value("Time").toDateTime();
             m_dDueIncome = record.value("DueIncome").toDouble();
             m_dRealIncome = record.value("RealIncome").toDouble();
+            m_strMaker = record.value("Maker").toString();
         }
 
         return true;
@@ -111,7 +113,7 @@ bool ClinicChargeTable::ReadChargeRecords()
     if(myDB::connectDB())
     {
         QSqlTableModel *model = new QSqlTableModel;
-        model->setTable(strClinicChargeRecords);
+        model->setTable(strClinicChargeDetails);
         model->setFilter("ChargeId = \'" + m_strID +"\'");
         model->select();
 
@@ -142,10 +144,10 @@ bool ClinicChargeTable::saveChargeRecords()
 {
     if(myDB::connectDB())
     {
-        deleteRows(strClinicChargeRecords,"ChargeId",m_strID);
+        deleteRows(strClinicChargeDetails,"ChargeId",m_strID);
 
         QSqlTableModel *model = new QSqlTableModel;
-        model->setTable(strClinicChargeRecords);
+        model->setTable(strClinicChargeDetails);
 
         for(int i = 0; i < m_chargeItems.size(); i++)
         {
@@ -189,9 +191,8 @@ bool ClinicChargeTable::saveChargeTable()
         model->setData(model->index(row,8),m_patient.getDoctor());
         model->setData(model->index(row,9),m_dDueIncome);
         model->setData(model->index(row,10),m_dRealIncome);
-        //model->setData(model->index(row,11),QDateTime::currentDateTime());
-        //m_time.setDate(record.value("Time").toDateTime());
         model->setData(model->index(row,11),m_time);
+        model->setData(model->index(row,12),m_strMaker);
         model->submitAll();
         return true;
     }
@@ -219,8 +220,6 @@ bool ClinicChargeTable::Save()
         return false;
 }
 
-
-
 bool ClinicChargeTable::Delete()
 {
       if(deleteChargeTable())
@@ -244,7 +243,7 @@ bool ClinicChargeTable::deleteChargeRecords()
 {
     if(myDB::connectDB())
     {
-        return deleteRows(strClinicChargeRecords,"ChargeId",m_strID);
+        return deleteRows(strClinicChargeDetails,"ChargeId",m_strID);
     }
     else
         return false;

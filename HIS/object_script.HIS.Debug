@@ -11,9 +11,12 @@ INPUT(
 ./debug\clinicchargeform.o
 ./debug\clinicdailyreportform.o
 ./debug\clinicdailyreporttable.o
+./debug\clinicinternalpaymentform.o
+./debug\clinicinternalpayment.o
 ./debug\moc_hismainwindow.o
 ./debug\moc_subform.o
 ./debug\moc_findclincchargedlg.o
 ./debug\moc_clinicchargeform.o
 ./debug\moc_clinicdailyreportform.o
+./debug\moc_clinicinternalpaymentform.o
 );

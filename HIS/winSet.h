@@ -24,6 +24,14 @@ enum Gender{
 };
 
 //---------------------------------------------------------------------------------------------------------------------------------------
+// 门诊收据
+//---------------------------------------------------------------------------------------------------------------------------------------
+enum ClinicReceipt{
+    drug = 0,
+    other = 1
+};
+
+//---------------------------------------------------------------------------------------------------------------------------------------
 // 门诊收费记录
 //---------------------------------------------------------------------------------------------------------------------------------------
 enum ChargeItemIndex
@@ -43,7 +51,7 @@ enum ChargeItemIndex
 const QString strDBType = "QSQLITE";
 const QString strDBName = "./sqlite/test.db";
 const QString strClinicCharge = "ClinicCharge";
-const QString strClinicChargeRecords = "ClinicChargeRecords";
+const QString strClinicChargeDetails = "ClinicChargeDetails";
 const QString strClinicDailyReport = "ClinicDailyReport";
 
 //---------------------------------------------------------------------------------------------------------------------------------------
@@ -70,6 +78,7 @@ const QString strPrintToolBar = "打印";
 const QString strClinicMenu = "门诊";
 const QString strClinicChargeAction = "门诊收费";
 const QString strClinicDailyReportAction = "门诊日结";
+const QString strClinicInternalPaymentAction = "内部交款";
 
 const int nSubFormDefaultWidth = 850;
 const int nSubFormDefaultHeight = 600;
