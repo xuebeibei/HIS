@@ -6,9 +6,7 @@ HISMainWindow::HISMainWindow(QWidget *parent) :
     createActions();
     createMenus();
     createToolBars();
-    //showClinicCharge();
-    //showClinicDailyReport();
-    showClinicInternalPayment();
+    showClinicCharge();
 }
 
 HISMainWindow::~HISMainWindow()
@@ -43,6 +41,45 @@ void HISMainWindow::showClinicInternalPayment()
 {
     initToolsAllEnable();
     subForm = new ClinicInternalPaymentForm;
+    setCentralWidget(subForm);
+
+    newAction->setEnabled(false);
+    deleteAction->setEnabled(false);
+    amendAction->setEnabled(false);
+    findAction->setEnabled(false);
+    saveAction->setEnabled(false);
+}
+
+void HISMainWindow::showChargeStatistic()
+{
+    initToolsAllEnable();
+    subForm = new ClinicChargeStatisticForm;
+    setCentralWidget(subForm);
+
+    newAction->setEnabled(false);
+    deleteAction->setEnabled(false);
+    amendAction->setEnabled(false);
+    findAction->setEnabled(false);
+    saveAction->setEnabled(false);
+}
+
+void HISMainWindow::showReportStatistic()
+{
+    initToolsAllEnable();
+    subForm = new ClinicReportStatisticForm;
+    setCentralWidget(subForm);
+
+    newAction->setEnabled(false);
+    deleteAction->setEnabled(false);
+    amendAction->setEnabled(false);
+    findAction->setEnabled(false);
+    saveAction->setEnabled(false);
+}
+
+void HISMainWindow::showPaymentStatistic()
+{
+    initToolsAllEnable();
+    subForm = new ClinicPaymentStatisticForm;
     setCentralWidget(subForm);
 
     newAction->setEnabled(false);
@@ -110,15 +147,11 @@ void HISMainWindow::previewTableFile()
 
 void HISMainWindow::printTableFile()
 {
-//    QPrinter   printer( QPrinter::PrinterResolution );
-//    QPrintDialog   dialog( &printer, this );
-//    if ( dialog.exec() == QDialog::Accepted ) print( &printer );
     subForm->printTableFile();
 }
 
 void HISMainWindow::createActions()
 {  
-
     clinicChargeAction = new QAction(strClinicChargeAction,this);
     connect(clinicChargeAction, SIGNAL(triggered()), this, SLOT(showClinicCharge()));
 
@@ -128,6 +161,14 @@ void HISMainWindow::createActions()
     clinicInternalPaymentAction = new QAction(strClinicInternalPaymentAction,this);
     connect(clinicInternalPaymentAction, SIGNAL(triggered()), this, SLOT(showClinicInternalPayment()));
 
+    clinicChargeStatisticAction = new QAction(strClinicChargeStatisticAction,this);
+    connect(clinicChargeStatisticAction, SIGNAL(triggered()), this, SLOT(showChargeStatistic()));
+
+    clinicReportStatisticAction = new QAction(strClinicReportStatisticAction,this);
+    connect(clinicReportStatisticAction, SIGNAL(triggered()), this, SLOT(showReportStatistic()));
+
+    clinicPaymentStatisticAction = new QAction(strClinicPaymentStatisticAction,this);
+    connect(clinicPaymentStatisticAction, SIGNAL(triggered()), this, SLOT(showPaymentStatistic()));
 
     newAction = new QAction(strNewAction,this);
     connect(newAction, SIGNAL(triggered()), this, SLOT(newTableFile()));
@@ -160,6 +201,12 @@ void HISMainWindow::createMenus()
     clinicMenu->addAction(clinicChargeAction);
     clinicMenu->addAction(clinicDailyReportAction);
     clinicMenu->addAction(clinicInternalPaymentAction);
+    clinicStatistics = new QMenu("统计查询");
+    clinicMenu->addMenu(clinicStatistics);
+
+    clinicStatistics->addAction(clinicChargeStatisticAction);
+    clinicStatistics->addAction(clinicReportStatisticAction);
+    clinicStatistics->addAction(clinicPaymentStatisticAction);
 }
 
 void HISMainWindow::createToolBars()
@@ -168,15 +215,15 @@ void HISMainWindow::createToolBars()
     fileToolBar->addAction(newAction);
     fileToolBar->addAction(saveAction);
     fileToolBar->addAction(deleteAction);
-    fileToolBar->addAction(exportAction);
+    //fileToolBar->addAction(exportAction);
 
     editToolBar = addToolBar(strEditToolBar);
     editToolBar->addAction(findAction);
     editToolBar->addAction(amendAction);
 
-    printToolBar = addToolBar(strPrintToolBar);
-    printToolBar->addAction(previewAction);
-    printToolBar->addAction(printAction);
+    //printToolBar = addToolBar(strPrintToolBar);
+    //printToolBar->addAction(previewAction);
+    //printToolBar->addAction(printAction);
 }
 
 void HISMainWindow::initToolsAllEnable()
@@ -190,4 +237,3 @@ void HISMainWindow::initToolsAllEnable()
     previewAction->setEnabled(true);
     printAction->setEnabled(true);
 }
-

@@ -181,7 +181,7 @@ public:
     // 备注：无
     // 时间：2016-04-27
     //-----------------------------------------------------------------------------------------------------------------------------------
-    static QVector<ClinicDailyReportTable*> getRecord(QDate date);
+    static QVector<ClinicDailyReportTable*> getRecord(QDate startDate, QDate endDate);
 protected:
 
     //-----------------------------------------------------------------------------------------------------------------------------------

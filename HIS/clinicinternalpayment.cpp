@@ -4,22 +4,29 @@ ClinicInternalPayment::ClinicInternalPayment()
 {
 }
 
+QVector<QString> getDistinctFromDB(QString strColumn, QString strTable)
+{
+    QVector<QString> vec;
+    QSqlQueryModel *sqlModel = new QSqlTableModel;
+    sqlModel->setQuery("SELECT distinct " + strColumn + " FROM " + strTable);
+
+    for(int i = 0; i<sqlModel->rowCount();i++)
+    {
+        QSqlRecord record = sqlModel->record(i);
+        QString strReceipt = record.value(strColumn).toString();
+        vec.append(strReceipt);
+    }
+    return vec;
+}
+
 QVector<InternalPaymentItem *> ClinicInternalPayment::selectFromDB(QDate startDate, QDate endDate)
 {
     QVector<InternalPaymentItem *> result;
-    QVector<QString> Receipt;
     if(myDB::connectDB())
     {
+        QVector<QString> Receipt = getDistinctFromDB("ChinicReceipt" , strClinicChargeDetails);
+
         QSqlQueryModel *sqlModel = new QSqlTableModel;
-        sqlModel->setQuery("SELECT distinct ChinicReceipt FROM " + strClinicChargeDetails);
-
-        for(int i = 0; i<sqlModel->rowCount();i++)
-        {
-            QSqlRecord record = sqlModel->record(i);
-            QString strReceipt = record.value("ChinicReceipt").toString();
-            Receipt.append(strReceipt);
-        }
-
         for(int i=0;i<Receipt.size();i++)
         {
             InternalPaymentItem *item = new InternalPaymentItem;

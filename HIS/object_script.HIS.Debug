@@ -13,10 +13,16 @@ INPUT(
 ./debug\clinicdailyreporttable.o
 ./debug\clinicinternalpaymentform.o
 ./debug\clinicinternalpayment.o
+./debug\clinicchargestatisticform.o
+./debug\clinicreportstatisticform.o
+./debug\clinicpaymentstatisticform.o
 ./debug\moc_hismainwindow.o
 ./debug\moc_subform.o
 ./debug\moc_findclincchargedlg.o
 ./debug\moc_clinicchargeform.o
 ./debug\moc_clinicdailyreportform.o
 ./debug\moc_clinicinternalpaymentform.o
+./debug\moc_clinicchargestatisticform.o
+./debug\moc_clinicreportstatisticform.o
+./debug\moc_clinicpaymentstatisticform.o
 );

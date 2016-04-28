@@ -103,15 +103,15 @@ void ClinicDailyReportTable::setDailyReport(QVector<ClinicChargeTable*> vecDaily
     }
 }
 
-QVector<ClinicDailyReportTable*> ClinicDailyReportTable::getRecord(QDate date)
+QVector<ClinicDailyReportTable*> ClinicDailyReportTable::getRecord(QDate startDate, QDate endDate)
 {
     QVector<ClinicDailyReportTable*> list;
     if(myDB::connectDB())
     {
         QSqlTableModel *model = new QSqlTableModel;
         model->setTable(strClinicDailyReport);
-        QString strStartTime = date.toString("yyyy-MM-dd") + "T00:00:00";
-        QString strEndTime = date.toString("yyyy-MM-dd") + "T23:59:59";
+        QString strStartTime = startDate.toString("yyyy-MM-dd") + "T00:00:00";
+        QString strEndTime = endDate.toString("yyyy-MM-dd") + "T23:59:59";
         model->setFilter("ReportTime between \'" + strStartTime + "\' and \'" +strEndTime +"\'");
         model->select();
 

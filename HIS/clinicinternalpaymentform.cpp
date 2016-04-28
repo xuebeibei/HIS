@@ -56,13 +56,13 @@ void ClinicInternalPaymentForm::printTableFile()
 
 void ClinicInternalPaymentForm::create()
 {
-    m_startDateLabel = new QLabel("起始日期：");
+    m_startDateLabel = new QLabel(strStartDateLabel);
     m_startDateEdit = new QDateEdit;
     m_startDateEdit->setCalendarPopup(true);
     m_startDateEdit->setMaximumDateTime(QDateTime::currentDateTime());
     connect(m_startDateEdit, SIGNAL(dateTimeChanged(QDateTime)), this, SLOT(updateTable()));
 
-    m_endDateLabel = new QLabel("终止日期：");
+    m_endDateLabel = new QLabel(strEndDateLabel);
     m_endDateEdit = new QDateEdit;
     m_endDateEdit->setCalendarPopup(true);
     m_endDateEdit->setMaximumDateTime(QDateTime::currentDateTime());

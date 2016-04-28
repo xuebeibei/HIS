@@ -98,10 +98,8 @@ void ClinicDailyReportFrom::updateIncome()
     {
         QStandardItem *dueIncomeItem = m_dailyChargesModel->item(i,2);
         QStandardItem *realIncomeItem = m_dailyChargesModel->item(i,3);
-
-        double dDueIncome = (realIncomeItem == NULL) ? 0 : realIncomeItem->text().toDouble();
-        double dRealIncome = (dueIncomeItem == NULL) ? 0 : dueIncomeItem->text().toInt();
-
+        double dDueIncome  = (dueIncomeItem == NULL) ? 0 : dueIncomeItem->text().toDouble();
+        double dRealIncome = (realIncomeItem == NULL) ? 0 : realIncomeItem->text().toDouble();
         dAllDueIncome += dDueIncome;
         dAllRealIncome += dRealIncome;
     }
@@ -167,7 +165,7 @@ void ClinicDailyReportFrom::initTable()
 
 void ClinicDailyReportFrom::showTodayReports()
 {
-    QVector<ClinicDailyReportTable*> record = ClinicDailyReportTable::getRecord(m_dateEdit->date());
+    QVector<ClinicDailyReportTable*> record = ClinicDailyReportTable::getRecord(m_dateEdit->date(),m_dateEdit->date());
 
     for(int i = 0; i < record.size();i++)
     {

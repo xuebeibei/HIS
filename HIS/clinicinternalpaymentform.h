@@ -44,12 +44,11 @@ private:
     QLabel *m_startDateLabel;         // 起始时间
     QLabel *m_endDateLabel;           // 结束时间
 
-    QDateEdit *m_startDateEdit;   // 起始时间
-    QDateEdit *m_endDateEdit;     // 结束时间
+    QDateEdit *m_startDateEdit;       // 起始时间
+    QDateEdit *m_endDateEdit;         // 结束时间
 
     QTableView *m_resultView;         // 查询结果表格
     QStandardItemModel *m_resultModel;// 查询结果表格
-
 };
 
 #endif // CLINICINTERNALPAYMENTFORM_H

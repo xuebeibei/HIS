@@ -80,6 +80,10 @@ const QString strClinicChargeAction = "门诊收费";
 const QString strClinicDailyReportAction = "门诊日结";
 const QString strClinicInternalPaymentAction = "内部交款";
 
+const QString strClinicChargeStatisticAction = "收费统计";
+const QString strClinicReportStatisticAction = "日结统计";
+const QString strClinicPaymentStatisticAction = "项目统计";
+
 const int nSubFormDefaultWidth = 850;
 const int nSubFormDefaultHeight = 600;
 
@@ -124,5 +128,9 @@ const QString strCancelButton = "取消";
 // 门诊收费
 //---------------------------------------------------------------------------------------------------------------------------------------
 const QString strDailyReopotNumPR = "D";
+
+const QString strStartDateLabel = "起始日期：";
+const QString strEndDateLabel = "终止日期：";
+
 
 #endif // WINSTRING_H

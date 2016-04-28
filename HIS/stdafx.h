@@ -27,6 +27,7 @@
 #include <QCalendarWidget>
 #include <QtPrintSupport/QPrinter>
 #include <QtPrintSupport/QPrintDialog>
+#include <QButtonGroup>
 #include "winSet.h"
 
 #endif // STDAFX_H
