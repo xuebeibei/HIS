@@ -32,8 +32,9 @@ protected slots:
     void updateTable();
     void setConditionSort();
     void setConditionWho();
-    void setStartDate();
-    void setEndDate();
+
+protected:
+    void selectFrom(QDate startDate, QDate endDate, QString strConditionSort,QString strConditionWho);
 
 protected:
     QLabel *m_startDateLabel;
@@ -58,8 +59,9 @@ protected:
 
     QString m_strConditionSort;
     QString m_strConditionWho;
-    QDate m_startDate;
-    QDate m_endDate;
+    QVector<QString> m_vecSort;
+    QVector<QString> m_vecWho;
+    QVector<QVector<double> > m_dueIncome;
 };
 
 #endif // CLINICPAYMENTSTATISTICFORM_H

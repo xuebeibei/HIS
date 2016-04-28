@@ -17,6 +17,7 @@ class ClinicInternalPayment
 {
 public:
     ClinicInternalPayment();
+    static QVector<QString> getDistinctFromDB(QString strColumn, QString strTable);
     static QVector<InternalPaymentItem*> selectFromDB(QDate startDate, QDate endDate);
 };
 

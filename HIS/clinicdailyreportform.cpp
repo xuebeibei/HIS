@@ -38,7 +38,6 @@ bool ClinicDailyReportFrom::saveTableFile()
         QMessageBox::information(this,"提示","保存失败！");
         return false;
     }
-
 }
 
 bool ClinicDailyReportFrom::deleteTableFile()

@@ -4,7 +4,7 @@ ClinicInternalPayment::ClinicInternalPayment()
 {
 }
 
-QVector<QString> getDistinctFromDB(QString strColumn, QString strTable)
+QVector<QString> ClinicInternalPayment::getDistinctFromDB(QString strColumn, QString strTable)
 {
     QVector<QString> vec;
     QSqlQueryModel *sqlModel = new QSqlTableModel;
@@ -24,7 +24,8 @@ QVector<InternalPaymentItem *> ClinicInternalPayment::selectFromDB(QDate startDa
     QVector<InternalPaymentItem *> result;
     if(myDB::connectDB())
     {
-        QVector<QString> Receipt = getDistinctFromDB("ChinicReceipt" , strClinicChargeDetails);
+        QString strClumn = "ChinicReceipt";
+        QVector<QString> Receipt = getDistinctFromDB(strClumn , strClinicChargeDetails);
 
         QSqlQueryModel *sqlModel = new QSqlTableModel;
         for(int i=0;i<Receipt.size();i++)
@@ -35,7 +36,7 @@ QVector<InternalPaymentItem *> ClinicInternalPayment::selectFromDB(QDate startDa
             QString startTime = startDate.toString("yyyy-MM-dd") + "T00:00:00";
             QString endTime = endDate.toString("yyyy-MM-dd") + "T23:59:59";
             sqlModel->setQuery("Select * from " + strClinicChargeDetails +
-                               " where ChinicReceipt = \'" + item->m_strName +
+                               " where "+ strClumn + "= \'" + item->m_strName +
                                "\' and chargeid in (select id from cliniccharge where time between \'" +
                                startTime +
                                "\' and \'" +
@@ -52,3 +53,5 @@ QVector<InternalPaymentItem *> ClinicInternalPayment::selectFromDB(QDate startDa
 
     return result;
 }
+
+

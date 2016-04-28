@@ -1,4 +1,5 @@
 #include "clinicpaymentstatisticform.h"
+#include "clinicinternalpayment.h"
 
 ClinicPaymentStatisticForm::ClinicPaymentStatisticForm(SubForm *parent) :
     SubForm(parent)
@@ -53,11 +54,11 @@ void ClinicPaymentStatisticForm::create()
     m_startDateLabel = new QLabel(strStartDateLabel);
     m_startDateEdit = new QDateEdit;
     m_startDateEdit->setCalendarPopup(true);
-    connect(m_startDateEdit, SIGNAL(dateChanged(QDate)), this, SLOT());
+    connect(m_startDateEdit, SIGNAL(dateChanged(QDate)), this, SLOT(updateTable()));
     m_endDateLabel = new QLabel(strEndDateLabel);
     m_endDateEdit = new QDateEdit;
     m_endDateEdit->setCalendarPopup(true);
-    connect(m_endDateEdit, SIGNAL(dateChanged(QDate)), this, SLOT());
+    connect(m_endDateEdit, SIGNAL(dateChanged(QDate)), this, SLOT(updateTable()));
 
 
     m_conditionSortBtnGroup = new QButtonGroup(this);
@@ -128,76 +129,139 @@ void ClinicPaymentStatisticForm::setMyLayout()
 
 void ClinicPaymentStatisticForm::init()
 {
-    initTable();
-
     m_startDateEdit->setDate(QDate::currentDate());
     m_endDateEdit->setDate(QDate::currentDate());
     m_clinicReceiptRadio->setChecked(true);
+    setConditionSort();
     m_departmentRadio->setChecked(true);
+    setConditionWho();
 }
 
 void ClinicPaymentStatisticForm::initTable()
 {
     m_resultModel->clear();
     m_resultModel->setHorizontalHeaderItem(0, new QStandardItem(m_strConditionSort));
-    m_resultModel->setHorizontalHeaderItem(1, new QStandardItem(m_strConditionWho));
-    m_resultModel->setHorizontalHeaderItem(2, new QStandardItem("应收合计"));
-    m_resultModel->setItem(0, 2, NULL);
+    for(int i = 0; i < m_vecWho.size();i++)
+    {
+        m_resultModel->setHorizontalHeaderItem(i+1, new QStandardItem(m_vecWho.at(i)));
+    }
+    int last = m_vecWho.size() == 0 ? 1: m_vecWho.size()+1;
+    m_resultModel->setHorizontalHeaderItem(last, new QStandardItem("应收合计"));
+    for(int i = 0;i < m_vecSort.size();i++)
+    {
+        m_resultModel->setItem(i, 0, new QStandardItem(m_vecSort.at(i)));
+    }
 }
 
 void ClinicPaymentStatisticForm::updateTable()
 {
     // 获取条件
     initTable();
-
-    if(myDB::connectDB())
-    {
-
-    }
     // 从数据库按条件查询
+    selectFrom(m_startDateEdit->date(),m_endDateEdit->date(),m_strConditionSort,m_strConditionWho);
+
+    for(int i = 0;i<m_dueIncome.size();i++)
+    {
+        QVector<double> temp = m_dueIncome.at(i);
+        for(int j = 0;j<temp.size();j++)
+        {
+            QString str = QString::number(temp.at(j));
+            m_resultModel->setItem(i, j+1, new QStandardItem(str));
+        }
+    }
 }
 
 void ClinicPaymentStatisticForm::setConditionSort()
 {
+    QString strColumnSort = "ChinicReceipt";
     switch(m_conditionSortBtnGroup->checkedId())
     {
     case 0:
+    {
         m_strConditionSort = "门诊收据";
-        break;
-    case 1:
-        m_strConditionSort = "门诊分类";
+        strColumnSort = "ChinicReceipt";
         break;
     }
+    case 1:
+    {
+        m_strConditionSort = "门诊分类";
+        strColumnSort = "ClinicSort";
+        break;
+    }
+    }
+
+    m_vecSort = ClinicInternalPayment::getDistinctFromDB(strColumnSort , strClinicChargeDetails);
+
     updateTable();
 }
 
 void ClinicPaymentStatisticForm::setConditionWho()
 {
+    QString strColumnWho = "Department";
     switch(m_conditionWhoBtnGroup->checkedId())
     {
     case 0:
+    {
         m_strConditionWho = "科室";
-        break;
-    case 1:
-        m_strConditionWho = "医生";
-        break;
-    case 2:
-        m_strConditionWho = "制单人";
+        strColumnWho = "Department";
         break;
     }
+    case 1:
+    {
+        m_strConditionWho = "医生";
+        strColumnWho = "Doctor";
+        break;
+    }
+    case 2:
+    {
+        m_strConditionWho = "制单人";
+        strColumnWho = "Maker";
+        break;
+    }
+    }
+
+    m_vecWho = ClinicInternalPayment::getDistinctFromDB(strColumnWho , strClinicCharge);
+
     updateTable();
 }
 
-void ClinicPaymentStatisticForm::setStartDate()
+
+void ClinicPaymentStatisticForm::selectFrom(QDate startDate, QDate endDate, QString strConditionSort,QString strConditionWho)
 {
-    m_startDate = m_startDateEdit->date();
-    updateTable();
+    if(endDate < startDate)
+        return;
+    if(m_vecSort.size()<=0||m_vecWho.size()<=0)
+        return;
+    m_dueIncome.resize(0);
+    if(myDB::connectDB())
+    {
+        QString startTime = startDate.toString("yyyy-MM-dd") + "T00:00:00";
+        QString endTime = endDate.toString("yyyy-MM-dd") + "T23:59:59";
+        QSqlQueryModel *sqlModel = new QSqlTableModel;
+        for(int i = 0;i< m_vecSort.size();i++)
+        {
+            QString strSort = m_vecSort.at(i);
+            m_resultModel->setItem(i, 0, new QStandardItem(strSort));
+            QVector<double> temp;
+            for(int j = 0;j< m_vecWho.size();j++)
+            {
+
+                QString strWho = m_vecWho.at(j);
+                QString strSql = "select * from clinicchargedetails where clinicSort = \'" + strSort +"\' and chargei"
+                        "d in (select id from cliniccharge where time between \'"+ startTime+"\' and \'"+endTime+
+                        "\' and department = \'" + strWho +"\')";
+                sqlModel->setQuery(strSql);
+
+                double all = 0;
+                for(int n = 0;n<sqlModel->rowCount();n++)
+                {
+                    int nCount = sqlModel->record(n).value("ChargeItemCount").toInt();
+                    double nPrice = sqlModel->record(n).value("ChargeItemPrice").toDouble();
+                    all += nCount*nPrice;
+                }
+                temp.append(all);
+            }
+            m_dueIncome.append(temp);
+        }
+    }
 }
-
-void ClinicPaymentStatisticForm::setEndDate()
-{
-    m_endDate = m_endDateEdit->date();
-    updateTable();
-}
-
-
