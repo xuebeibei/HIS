@@ -30,7 +30,8 @@ SOURCES += main.cpp\
     clinicinternalpayment.cpp \
     clinicchargestatisticform.cpp \
     clinicreportstatisticform.cpp \
-    clinicpaymentstatisticform.cpp
+    clinicpaymentstatisticform.cpp \
+    finddailyreportdialog.cpp
 
 HEADERS  += hismainwindow.h \
     stdafx.h \
@@ -50,7 +51,8 @@ HEADERS  += hismainwindow.h \
     clinicinternalpayment.h \
     clinicchargestatisticform.h \
     clinicreportstatisticform.h \
-    clinicpaymentstatisticform.h
+    clinicpaymentstatisticform.h \
+    finddailyreportdialog.h
 
 FORMS    +=
 

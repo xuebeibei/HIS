@@ -17,6 +17,8 @@ public:
     bool Save();
     bool Delete();
 
+    QDateTime getDateTime();
+
     //-----------------------------------------------------------------------------------------------------------------------------------
     // 名称：getId
     // 作用：得到门诊日结单的单号
@@ -195,7 +197,7 @@ protected:
     // 备注：无
     // 时间：2016-04-27
     //-----------------------------------------------------------------------------------------------------------------------------------
-    bool selectClinicChargesByDate(QDate date);
+    //bool selectClinicChargesByDate(QDate date);
 
     //-----------------------------------------------------------------------------------------------------------------------------------
     // 名称：readDailyReport
@@ -232,15 +234,16 @@ protected:
     // 时间：2016-04-27
     //-----------------------------------------------------------------------------------------------------------------------------------
     bool deleteDailyReport();
+
 protected:
     QString m_strId;                                                    // 日结单单号
     QString m_strPrefixion;                                             // 日结单单号前缀
     double m_dAllDueIncome;                                             // 应收合计
     double m_dAllRealIncome;                                            // 实收合计
     double m_dAllDebt;                                                  // 欠款合计 = 应收合计 - 实收合计
-    QDate m_date;                                                       // 制单日期
-    QVector<ClinicChargeTable*> m_vecDailyReportDetails;                // 结单内容
+    QDate m_date;                                                       // 日结日期
     QString m_strMaker;
+    QDateTime m_time;                                                       // 制单时间
 };
 
 #endif // CLINICDAILYREOPRTTABLE_H

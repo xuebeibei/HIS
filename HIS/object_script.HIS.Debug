@@ -16,6 +16,7 @@ INPUT(
 ./debug\clinicchargestatisticform.o
 ./debug\clinicreportstatisticform.o
 ./debug\clinicpaymentstatisticform.o
+./debug\finddailyreportdialog.o
 ./debug\moc_hismainwindow.o
 ./debug\moc_subform.o
 ./debug\moc_findclincchargedlg.o
@@ -25,4 +26,5 @@ INPUT(
 ./debug\moc_clinicchargestatisticform.o
 ./debug\moc_clinicreportstatisticform.o
 ./debug\moc_clinicpaymentstatisticform.o
+./debug\moc_finddailyreportdialog.o
 );

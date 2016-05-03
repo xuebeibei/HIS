@@ -148,6 +148,8 @@ public:
     bool Read();
     bool Save();
     bool Delete();
+
+    static QVector<ClinicChargeTable*> selectClinicChargesFromDb(QDate date , QDateTime ReportTime);
 protected:
 
     //-----------------------------------------------------------------------------------------------------------------------------------

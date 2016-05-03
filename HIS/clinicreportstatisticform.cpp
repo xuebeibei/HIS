@@ -55,10 +55,12 @@ void ClinicReportStatisticForm::create()
     m_startDateLabel = new QLabel(strStartDateLabel);
     m_startDateEdit = new QDateEdit;
     m_startDateEdit->setCalendarPopup(true);
+    m_startDateEdit->setMaximumDate(QDate::currentDate());
     connect(m_startDateEdit, SIGNAL(dateChanged(QDate)), this, SLOT(updateTable()));
     m_endDateLabel = new QLabel(strEndDateLabel);
     m_endDateEdit = new QDateEdit;
     m_endDateEdit->setCalendarPopup(true);
+    m_endDateEdit->setMaximumDate(QDate::currentDate());
     connect(m_endDateEdit, SIGNAL(dateChanged(QDate)), this, SLOT(updateTable()));
 
     m_resultsView = new QTableView;
@@ -100,7 +102,7 @@ void ClinicReportStatisticForm::init()
 void ClinicReportStatisticForm::initTable()
 {
     m_resultsModel->clear();
-    m_resultsModel->setHorizontalHeaderItem(0, new QStandardItem("ID"));
+    m_resultsModel->setHorizontalHeaderItem(0, new QStandardItem("日结单号"));
     m_resultsModel->setHorizontalHeaderItem(1, new QStandardItem("应收合计"));
     m_resultsModel->setHorizontalHeaderItem(2, new QStandardItem("实收合计"));
     m_resultsModel->setItem(0, 2, NULL);

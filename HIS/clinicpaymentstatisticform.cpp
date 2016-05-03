@@ -54,10 +54,12 @@ void ClinicPaymentStatisticForm::create()
     m_startDateLabel = new QLabel(strStartDateLabel);
     m_startDateEdit = new QDateEdit;
     m_startDateEdit->setCalendarPopup(true);
+    m_startDateEdit->setMaximumDate(QDate::currentDate());
     connect(m_startDateEdit, SIGNAL(dateChanged(QDate)), this, SLOT(updateTable()));
     m_endDateLabel = new QLabel(strEndDateLabel);
     m_endDateEdit = new QDateEdit;
     m_endDateEdit->setCalendarPopup(true);
+    m_endDateEdit->setMaximumDate(QDate::currentDate());
     connect(m_endDateEdit, SIGNAL(dateChanged(QDate)), this, SLOT(updateTable()));
 
 

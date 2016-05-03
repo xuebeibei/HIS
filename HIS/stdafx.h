@@ -28,6 +28,7 @@
 #include <QtPrintSupport/QPrinter>
 #include <QtPrintSupport/QPrintDialog>
 #include <QButtonGroup>
+#include <QStatusBar>
 #include "winSet.h"
 
 #endif // STDAFX_H

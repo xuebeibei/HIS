@@ -6,6 +6,7 @@ HISMainWindow::HISMainWindow(QWidget *parent) :
     createActions();
     createMenus();
     createToolBars();
+    createStatusBar();
     showClinicCharge();
 }
 
@@ -23,6 +24,7 @@ void HISMainWindow::showClinicCharge()
     saveAction->setEnabled(true);
     deleteAction->setEnabled(false);
     amendAction->setEnabled(false);
+    locationLabel->setText("门诊收费");
 }
 
 void HISMainWindow::showClinicDailyReport()
@@ -34,7 +36,7 @@ void HISMainWindow::showClinicDailyReport()
     saveAction->setEnabled(true);
     deleteAction->setEnabled(false);
     amendAction->setEnabled(false);
-    findAction->setEnabled(false);
+    locationLabel->setText("门诊日结");
 }
 
 void HISMainWindow::showClinicInternalPayment()
@@ -48,6 +50,7 @@ void HISMainWindow::showClinicInternalPayment()
     amendAction->setEnabled(false);
     findAction->setEnabled(false);
     saveAction->setEnabled(false);
+    locationLabel->setText("门诊内部缴款");
 }
 
 void HISMainWindow::showChargeStatistic()
@@ -61,6 +64,7 @@ void HISMainWindow::showChargeStatistic()
     amendAction->setEnabled(false);
     findAction->setEnabled(false);
     saveAction->setEnabled(false);
+    locationLabel->setText("门诊收费查询");
 }
 
 void HISMainWindow::showReportStatistic()
@@ -74,6 +78,7 @@ void HISMainWindow::showReportStatistic()
     amendAction->setEnabled(false);
     findAction->setEnabled(false);
     saveAction->setEnabled(false);
+    locationLabel->setText("门诊日结查询");
 }
 
 void HISMainWindow::showPaymentStatistic()
@@ -87,6 +92,7 @@ void HISMainWindow::showPaymentStatistic()
     amendAction->setEnabled(false);
     findAction->setEnabled(false);
     saveAction->setEnabled(false);
+    locationLabel->setText("门诊项目查询");
 }
 
 void HISMainWindow::newTableFile()
@@ -224,6 +230,13 @@ void HISMainWindow::createToolBars()
     //printToolBar = addToolBar(strPrintToolBar);
     //printToolBar->addAction(previewAction);
     //printToolBar->addAction(printAction);
+}
+
+void HISMainWindow::createStatusBar()
+{
+     locationLabel= new QLabel;
+     statusBar()->addWidget(locationLabel);
+     statusBar()->setStyleSheet(QString("QStatusBar::item{border: 0px}"));
 }
 
 void HISMainWindow::initToolsAllEnable()

@@ -110,6 +110,7 @@ void ClinicChargeForm::setAllDefaultEnable()
     deleteRowButton->setEnabled(true);
     comboButton->setEnabled(true);
     m_chargeTableView->setEditTriggers(QAbstractItemView::DoubleClicked);
+    m_chargeTableView->setSelectionBehavior(QAbstractItemView::SelectRows);
 }
 
 
@@ -140,7 +141,22 @@ void ClinicChargeForm::addRow()
 
 void ClinicChargeForm::deleteRow()
 {
-    m_chargeRecordsmodel->removeRow(0);
+    QModelIndexList selected = m_chargeTableView->selectionModel()->selectedIndexes();
+    QMap<int, int> rowMap;
+
+    foreach (QModelIndex index, selected)
+    {
+        rowMap.insert(index.row(), 0);
+    }
+
+    QMapIterator<int, int> rowMapIterator(rowMap);
+    rowMapIterator.toBack();
+    while (rowMapIterator.hasPrevious())
+    {
+        rowMapIterator.previous();
+        int rowToDel = rowMapIterator.key();
+        m_chargeRecordsmodel->removeRow(rowToDel);
+    }
 }
 
 void ClinicChargeForm::combo()
@@ -351,7 +367,7 @@ void ClinicChargeForm::SetMyLayout()
     QHBoxLayout *RightTopLayout = new QHBoxLayout;
     RightTopLayout->addWidget(addRowButton);
     RightTopLayout->addWidget(deleteRowButton);
-    RightTopLayout->addWidget(comboButton);
+    //RightTopLayout->addWidget(comboButton);
     RightTopLayout->addStretch();
     QVBoxLayout *RightLayout = new QVBoxLayout;
     RightLayout->addLayout(RightTopLayout);
@@ -366,6 +382,7 @@ void ClinicChargeForm::SetMyLayout()
 
 bool ClinicChargeForm::Read()
 {
+    initTableModel();
     if(m_chargeTable->Read())
     {
         m_chargeNumEdit->setText(m_chargeTable->getID());

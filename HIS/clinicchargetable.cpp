@@ -225,7 +225,41 @@ bool ClinicChargeTable::Delete()
       if(deleteChargeTable())
             return deleteChargeRecords();
         else
-            return false;
+          return false;
+}
+
+QVector<ClinicChargeTable *> ClinicChargeTable::selectClinicChargesFromDb(QDate date , QDateTime ReportTime)
+{
+    QVector<ClinicChargeTable *> vecClinicCharges;
+    if(myDB::connectDB())
+    {
+        QSqlTableModel *model = new QSqlTableModel;
+        model->setTable(strClinicCharge);
+        QString strStartTime = date.toString("yyyy-MM-dd") + "T00:00:00";
+        QString strEndTime;
+        if(ReportTime .date() > date)
+        {
+            strEndTime = date.toString("yyyy-MM-dd") + "T23:59:59";
+        }
+        else if(ReportTime .date() == date)
+        {
+            strEndTime = date.toString("yyyy-MM-dd") + ReportTime .time().toString("Thh:mm:ss");
+        }
+
+        model->setFilter("Time between \'" + strStartTime + "\' and \'" +strEndTime +"\'");
+        model->select();
+
+        for(int i = 0; i < model->rowCount(); i++)
+        {
+            QSqlRecord record = model->record(i);
+            QString strChargeId = record.value("ID").toString();
+            ClinicChargeTable *charge = new ClinicChargeTable;
+            charge->setID(strChargeId);
+            charge->Read();
+            vecClinicCharges.append(charge);
+        }
+    }
+    return vecClinicCharges;
 }
 
 bool ClinicChargeTable::deleteChargeTable()
