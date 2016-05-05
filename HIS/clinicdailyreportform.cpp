@@ -44,8 +44,10 @@ bool ClinicDailyReportFrom::deleteTableFile()
     QMessageBox *box = new QMessageBox;
     box->setWindowTitle(tr("警告"));
     box->setIcon(QMessageBox::Warning);
-    box->setText(tr("确认删除？"));
+    box->setText(tr("确认删除当前日结单？"));
     box->setStandardButtons(QMessageBox::Yes|QMessageBox::No);
+    box->setButtonText(QMessageBox::Yes,"是");
+    box->setButtonText(QMessageBox::No,"否");
     if(box->exec()==QMessageBox::Yes)
     {
         return Delete();
@@ -212,11 +214,13 @@ void ClinicDailyReportFrom::setMyLayout()
 
 void ClinicDailyReportFrom::setAllDefaultEnable()
 {
-    m_dailyReportNumEdit->setEnabled(false);
-    m_allDueIncomeEdit->setEnabled(false);
-    m_allRealIncomeEdit->setEnabled(false);
-    m_allDebtEdit->setEnabled(false);
-    m_dateEdit->setEnabled(true);
+    m_dailyReportNumEdit->setReadOnly(true);
+    m_allDueIncomeEdit->setReadOnly(true);
+    m_allRealIncomeEdit->setReadOnly(true);
+    m_allDebtEdit->setReadOnly(true);
+    m_dateEdit->setReadOnly(false);
+
+
 
     m_dailyChargesView->setEditTriggers(QAbstractItemView::NoEditTriggers);
     m_dailyChargesView->setSelectionBehavior(QAbstractItemView::SelectRows);
@@ -224,11 +228,11 @@ void ClinicDailyReportFrom::setAllDefaultEnable()
 
 void ClinicDailyReportFrom::setAllUnEnable()
 {
-    m_dailyReportNumEdit->setEnabled(false);
-    m_allDueIncomeEdit->setEnabled(false);
-    m_allRealIncomeEdit->setEnabled(false);
-    m_allDebtEdit->setEnabled(false);
-    m_dateEdit->setEnabled(false);
+    m_dailyReportNumEdit->setReadOnly(true);
+    m_allDueIncomeEdit->setReadOnly(true);
+    m_allRealIncomeEdit->setReadOnly(true);
+    m_allDebtEdit->setReadOnly(true);
+    m_dateEdit->setReadOnly(true);
 
     m_dailyChargesView->setEditTriggers(QAbstractItemView::NoEditTriggers);
     m_dailyChargesView->setSelectionBehavior(QAbstractItemView::SelectRows);

@@ -44,6 +44,7 @@ void FindClincChargeDlg::create()
     m_resultsTableView->setModel(m_resultsModel);
     m_resultsTableView->setSelectionBehavior(QAbstractItemView::SelectRows);
     m_resultsTableView->setEditTriggers(QAbstractItemView::NoEditTriggers);
+    connect(m_resultsTableView, SIGNAL(doubleClicked(QModelIndex)), this, SLOT(choise()));
 
     m_choiseButton = new QPushButton(strChoiseButton);
     connect(m_choiseButton, SIGNAL(clicked()), this, SLOT(choise()));

@@ -88,9 +88,11 @@ void ClinicPaymentStatisticForm::create()
     m_resultView = new QTableView;
     m_resultModel = new QStandardItemModel;
     m_resultView->setModel(m_resultModel);
+    m_resultView->setSelectionBehavior(QAbstractItemView::SelectRows);
+    m_resultView->setEditTriggers(QAbstractItemView::NoEditTriggers);
 
-    m_strConditionSort = "门诊收据";
-    m_strConditionWho = "科室";
+    m_strConditionSort = "ChinicReceipt";
+    m_strConditionWho = "Department";
 }
 
 void ClinicPaymentStatisticForm::setMyLayout()
@@ -142,7 +144,12 @@ void ClinicPaymentStatisticForm::init()
 void ClinicPaymentStatisticForm::initTable()
 {
     m_resultModel->clear();
-    m_resultModel->setHorizontalHeaderItem(0, new QStandardItem(m_strConditionSort));
+    QString str = "";
+    if(m_strConditionSort == "ChinicReceipt")
+        str = "门诊收据";
+    if(m_strConditionSort == "ClinicSort")
+        str = "门诊分类";
+    m_resultModel->setHorizontalHeaderItem(0, new QStandardItem(str));
     for(int i = 0; i < m_vecWho.size();i++)
     {
         m_resultModel->setHorizontalHeaderItem(i+1, new QStandardItem(m_vecWho.at(i)));
@@ -164,65 +171,60 @@ void ClinicPaymentStatisticForm::updateTable()
 
     for(int i = 0;i<m_dueIncome.size();i++)
     {
+        double all = 0.0;
         QVector<double> temp = m_dueIncome.at(i);
         for(int j = 0;j<temp.size();j++)
         {
-            QString str = QString::number(temp.at(j));
-            m_resultModel->setItem(i, j+1, new QStandardItem(str));
+            all += temp.at(j);
+            m_resultModel->setItem(i, j+1, new QStandardItem(QString::number(temp.at(j))));
         }
+        m_resultModel->setItem(i, temp.size()+1, new QStandardItem(QString::number(all)));
     }
 }
 
 void ClinicPaymentStatisticForm::setConditionSort()
 {
-    QString strColumnSort = "ChinicReceipt";
     switch(m_conditionSortBtnGroup->checkedId())
     {
     case 0:
     {
-        m_strConditionSort = "门诊收据";
-        strColumnSort = "ChinicReceipt";
+        m_strConditionSort = "ChinicReceipt";
         break;
     }
     case 1:
     {
-        m_strConditionSort = "门诊分类";
-        strColumnSort = "ClinicSort";
+        m_strConditionSort = "ClinicSort";
         break;
     }
     }
 
-    m_vecSort = ClinicInternalPayment::getDistinctFromDB(strColumnSort , strClinicChargeDetails);
+    m_vecSort = ClinicInternalPayment::getDistinctFromDB(m_strConditionSort , strClinicChargeDetails);
 
     updateTable();
 }
 
 void ClinicPaymentStatisticForm::setConditionWho()
 {
-    QString strColumnWho = "Department";
     switch(m_conditionWhoBtnGroup->checkedId())
     {
     case 0:
     {
-        m_strConditionWho = "科室";
-        strColumnWho = "Department";
+        m_strConditionWho = "Department";
         break;
     }
     case 1:
     {
-        m_strConditionWho = "医生";
-        strColumnWho = "Doctor";
+        m_strConditionWho = "Doctor";
         break;
     }
     case 2:
     {
-        m_strConditionWho = "制单人";
-        strColumnWho = "Maker";
+        m_strConditionWho = "Maker";
         break;
     }
     }
 
-    m_vecWho = ClinicInternalPayment::getDistinctFromDB(strColumnWho , strClinicCharge);
+    m_vecWho = ClinicInternalPayment::getDistinctFromDB(m_strConditionWho , strClinicCharge);
 
     updateTable();
 }
@@ -249,9 +251,13 @@ void ClinicPaymentStatisticForm::selectFrom(QDate startDate, QDate endDate, QStr
             {
 
                 QString strWho = m_vecWho.at(j);
-                QString strSql = "select * from clinicchargedetails where clinicSort = \'" + strSort +"\' and chargei"
-                        "d in (select id from cliniccharge where time between \'"+ startTime+"\' and \'"+endTime+
-                        "\' and department = \'" + strWho +"\')";
+
+                QString strSql = "select * from clinicchargedetails where "
+                        + strConditionSort+ " = \'" + strSort + "\' and chargei"
+                        "d in (select id from cliniccharge where time between \'"
+                        + startTime+"\' and \'"+endTime+
+                        "\' and " + strConditionWho +
+                        " = \'" + strWho +"\')";
                 sqlModel->setQuery(strSql);
 
                 double all = 0;

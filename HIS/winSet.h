@@ -78,7 +78,7 @@ const QString strPrintToolBar = "打印";
 const QString strClinicMenu = "门诊";
 const QString strClinicChargeAction = "门诊收费";
 const QString strClinicDailyReportAction = "门诊日结";
-const QString strClinicInternalPaymentAction = "内部交款";
+const QString strClinicInternalPaymentAction = "内部缴款";
 
 const QString strClinicChargeStatisticAction = "收费统计";
 const QString strClinicReportStatisticAction = "日结统计";

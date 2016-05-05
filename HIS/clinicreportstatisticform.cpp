@@ -66,6 +66,8 @@ void ClinicReportStatisticForm::create()
     m_resultsView = new QTableView;
     m_resultsModel = new QStandardItemModel;
     m_resultsView->setModel(m_resultsModel);
+    m_resultsView->setSelectionBehavior(QAbstractItemView::SelectRows);
+    m_resultsView->setEditTriggers(QAbstractItemView::NoEditTriggers);
 }
 
 void ClinicReportStatisticForm::setMyLayout()

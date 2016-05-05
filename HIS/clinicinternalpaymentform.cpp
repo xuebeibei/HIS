@@ -60,13 +60,17 @@ void ClinicInternalPaymentForm::create()
     m_startDateEdit = new QDateEdit;
     m_startDateEdit->setCalendarPopup(true);
     m_startDateEdit->setMaximumDateTime(QDateTime::currentDateTime());
-    connect(m_startDateEdit, SIGNAL(dateTimeChanged(QDateTime)), this, SLOT(updateTable()));
+    connect(m_startDateEdit, SIGNAL(dateChanged(QDate)), this, SLOT(updateTable()));
 
     m_endDateLabel = new QLabel(strEndDateLabel);
     m_endDateEdit = new QDateEdit;
     m_endDateEdit->setCalendarPopup(true);
     m_endDateEdit->setMaximumDateTime(QDateTime::currentDateTime());
-    connect(m_endDateEdit, SIGNAL(dateTimeChanged(QDateTime)), this, SLOT(updateTable()));
+    connect(m_endDateEdit, SIGNAL(dateChanged(QDate)), this, SLOT(updateTable()));
+
+    m_allDueIncomeLabel = new QLabel("应收合计：");
+    m_allDueIncomeEdit = new QLineEdit;
+    m_allDueIncomeEdit->setReadOnly(true);
 
     m_resultView = new QTableView;
     m_resultModel = new QStandardItemModel;
@@ -96,9 +100,12 @@ void ClinicInternalPaymentForm::setMyLayout()
     leftTopLayout->addWidget(m_startDateEdit,0,1);
     leftTopLayout->addWidget(m_endDateLabel,1,0);
     leftTopLayout->addWidget(m_endDateEdit,1,1);
+    leftTopLayout->addWidget(m_allDueIncomeLabel,2,0);
+    leftTopLayout->addWidget(m_allDueIncomeEdit,2,1);
 
     QVBoxLayout *leftLayout = new QVBoxLayout;
     leftLayout->addLayout(leftTopLayout);
+
     leftLayout->addStretch();
 
     QVBoxLayout *rightLayout = new QVBoxLayout;
@@ -122,4 +129,17 @@ void ClinicInternalPaymentForm::updateTable()
         m_resultModel->setItem(i, 0, new QStandardItem(payments.at(i)->m_strName));
         m_resultModel->setItem(i, 1, new QStandardItem(QString::number(payments.at(i)->m_dDueIncome)));
     }
+    updateIncome();
+}
+
+void ClinicInternalPaymentForm::updateIncome()
+{
+    double dAllDueIncome = 0.0;
+    for(int i = 0; i < m_resultModel->rowCount();i++)
+    {
+        QStandardItem *dueIncomeItem = m_resultModel->item(i,1);
+        double dDueIncome  = (dueIncomeItem == NULL) ? 0 : dueIncomeItem->text().toDouble();
+        dAllDueIncome += dDueIncome;
+    }
+    m_allDueIncomeEdit->setText(QString::number(dAllDueIncome));
 }

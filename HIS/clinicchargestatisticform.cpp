@@ -72,6 +72,8 @@ void ClinicChargeStatisticForm::create()
     m_resultsView = new QTableView;
     m_resultsModel = new QStandardItemModel;
     m_resultsView->setModel(m_resultsModel);
+    m_resultsView->setSelectionBehavior(QAbstractItemView::SelectRows);
+    m_resultsView->setEditTriggers(QAbstractItemView::NoEditTriggers);
 }
 
 void ClinicChargeStatisticForm::setMyLayout()
@@ -115,6 +117,11 @@ void ClinicChargeStatisticForm::init()
 void ClinicChargeStatisticForm::updateTable()
 {
     initTable();
+    QDate startDate = m_startDateEdit->date();
+    QDate endDate = m_endDateEdit->date();
+
+    if(startDate > endDate)
+        return;
 
     QString strName = m_nameEdit->text();
     Gender eGender = (Gender)m_genderComboBox->currentIndex();
@@ -133,8 +140,8 @@ void ClinicChargeStatisticForm::updateTable()
             strSql += strTemp;
         }
 
-        QString strStartTime = m_startDateEdit->date().toString("yyyy-MM-dd") + "T00:00:00";
-        QString strEndTime = m_endDateEdit->date().toString("yyyy-MM-dd") + "T23:59:59";
+        QString strStartTime = startDate.toString("yyyy-MM-dd") + "T00:00:00";
+        QString strEndTime = endDate.toString("yyyy-MM-dd") + "T23:59:59";
 
         strTemp = " and Time between \'" + strStartTime + "\' and \'" + strEndTime + "\'";
         strSql += strTemp;
@@ -154,31 +161,31 @@ void ClinicChargeStatisticForm::updateTable()
             for(int j = 0; j < mymodel->rowCount(); j++)
             {
                 m_resultsModel->setItem(index,0,new QStandardItem(strID));
-                m_resultsModel->setItem(index,1,new QStandardItem(record.value("Time").toString()));
-                m_resultsModel->setItem(index,2,new QStandardItem(record.value("Name").toString()));
-                m_resultsModel->setItem(index,3,new QStandardItem(record.value("Department").toString()));
-                m_resultsModel->setItem(index,4,new QStandardItem(record.value("Doctor").toString()));
-                QSqlRecord record1 = mymodel->record(i);
-                m_resultsModel->setItem(index,5,new QStandardItem(record1.value("ChargeItemName").toString()));
-                m_resultsModel->setItem(index,6,new QStandardItem(record1.value("ChargeItemCount").toString()));
-                m_resultsModel->setItem(index,7,new QStandardItem(record1.value("ChargeItemPrice").toString()));
+
+                m_resultsModel->setItem(index,1,new QStandardItem(record.value("Name").toString()));
+                m_resultsModel->setItem(index,2,new QStandardItem(record.value("Department").toString()));
+                m_resultsModel->setItem(index,3,new QStandardItem(record.value("Doctor").toString()));
+                QSqlRecord record1 = mymodel->record(j);
+                m_resultsModel->setItem(index,4,new QStandardItem(record1.value("ChargeItemName").toString()));
+                m_resultsModel->setItem(index,5,new QStandardItem(record1.value("ChargeItemCount").toString()));
+                m_resultsModel->setItem(index,6,new QStandardItem(record1.value("ChargeItemPrice").toString()));
+                m_resultsModel->setItem(index,7,new QStandardItem(record.value("Time").toString()));
                 index++;
             }
         }
     }
 }
 
-
 void ClinicChargeStatisticForm::initTable()
 {
     m_resultsModel->clear();
     m_resultsModel->setHorizontalHeaderItem(0,new QStandardItem(QObject::tr("收费单号")));
-    m_resultsModel->setHorizontalHeaderItem(1,new QStandardItem(QObject::tr("时间")));
-    m_resultsModel->setHorizontalHeaderItem(2,new QStandardItem(QObject::tr("姓名")));
-    m_resultsModel->setHorizontalHeaderItem(3,new QStandardItem(QObject::tr("科室")));
-    m_resultsModel->setHorizontalHeaderItem(4,new QStandardItem(QObject::tr("医生")));
-    m_resultsModel->setHorizontalHeaderItem(5,new QStandardItem(QObject::tr("收费项名称")));
-    m_resultsModel->setHorizontalHeaderItem(6,new QStandardItem(QObject::tr("数量")));
-    m_resultsModel->setHorizontalHeaderItem(7,new QStandardItem(QObject::tr("单价")));
+    m_resultsModel->setHorizontalHeaderItem(1,new QStandardItem(QObject::tr("姓名")));
+    m_resultsModel->setHorizontalHeaderItem(2,new QStandardItem(QObject::tr("科室")));
+    m_resultsModel->setHorizontalHeaderItem(3,new QStandardItem(QObject::tr("医生")));
+    m_resultsModel->setHorizontalHeaderItem(4,new QStandardItem(QObject::tr("收费项名称")));
+    m_resultsModel->setHorizontalHeaderItem(5,new QStandardItem(QObject::tr("数量")));
+    m_resultsModel->setHorizontalHeaderItem(6,new QStandardItem(QObject::tr("单价")));
+    m_resultsModel->setHorizontalHeaderItem(7,new QStandardItem(QObject::tr("收费时间")));
     m_resultsModel->setItem(0, 7, NULL);
 }

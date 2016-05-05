@@ -42,8 +42,10 @@ bool ClinicChargeForm::deleteTableFile()
     QMessageBox *box = new QMessageBox;
     box->setWindowTitle(tr("警告"));
     box->setIcon(QMessageBox::Warning);
-    box->setText(tr("确认删除？"));
+    box->setText(tr("确认删除当前收费单？"));
     box->setStandardButtons(QMessageBox::Yes|QMessageBox::No);
+    box->setButtonText(QMessageBox::Yes,"是");
+    box->setButtonText(QMessageBox::No,"否");
     if(box->exec()==QMessageBox::Yes)
     {
         return Delete();
@@ -95,17 +97,17 @@ void ClinicChargeForm::printTableFile()
 
 void ClinicChargeForm::setAllDefaultEnable()
 {
-    m_nameEdit->setEnabled(true);
+    m_nameEdit->setReadOnly(false);
     m_genderCombo->setEnabled(true);
-    m_ageEdit->setEnabled(true);
-    m_idCardNumEdit->setEnabled(true);
-    m_socialSecurityNumEdit->setEnabled(true);
+    m_ageEdit->setReadOnly(false);
+    m_idCardNumEdit->setReadOnly(false);
+    m_socialSecurityNumEdit->setReadOnly(false);
     m_medicalInsuranceTypeCombo->setEnabled(true);
-    m_departmentEdit->setEnabled(true);
-    m_doctorEdit->setEnabled(true);
-    m_dueIncomeEdit->setEnabled(false);
-    m_realIncomeEdit->setEnabled(true);
-    m_chargeNumEdit->setEnabled(false);
+    m_departmentEdit->setReadOnly(false);
+    m_doctorEdit->setReadOnly(false);
+    m_dueIncomeEdit->setReadOnly(true);
+    m_realIncomeEdit->setReadOnly(false);
+    m_chargeNumEdit->setReadOnly(true);
     addRowButton->setEnabled(true);
     deleteRowButton->setEnabled(true);
     comboButton->setEnabled(true);
@@ -113,20 +115,22 @@ void ClinicChargeForm::setAllDefaultEnable()
     m_chargeTableView->setSelectionBehavior(QAbstractItemView::SelectRows);
 }
 
-
 void ClinicChargeForm::setAllUnEnable()
 {
-    m_nameEdit->setEnabled(false);
+    m_nameEdit->setReadOnly(true);
+
+
     m_genderCombo->setEnabled(false);
-    m_ageEdit->setEnabled(false);
-    m_idCardNumEdit->setEnabled(false);
-    m_socialSecurityNumEdit->setEnabled(false);
+    m_ageEdit->setReadOnly(true);
+    m_idCardNumEdit->setReadOnly(true);
+    m_socialSecurityNumEdit->setReadOnly(true);
     m_medicalInsuranceTypeCombo->setEnabled(false);
-    m_departmentEdit->setEnabled(false);
-    m_doctorEdit->setEnabled(false);
-    m_dueIncomeEdit->setEnabled(false);
-    m_realIncomeEdit->setEnabled(false);
-    m_chargeNumEdit->setEnabled(false);
+    m_departmentEdit->setReadOnly(true);
+    m_doctorEdit->setReadOnly(true);
+    m_dueIncomeEdit->setReadOnly(true);
+    m_realIncomeEdit->setReadOnly(true);
+    m_chargeNumEdit->setReadOnly(true);
+
     addRowButton->setEnabled(false);
     deleteRowButton->setEnabled(false);
     comboButton->setEnabled(false);
@@ -175,15 +179,6 @@ void ClinicChargeForm::updateIncome()
 
         double dPrice = (priceItem == NULL) ? 0 : priceItem->text().toDouble();
         int nCount = (countItem == NULL) ? 0 : countItem->text().toInt();
-
-//        if(nCount < 0)
-//        {
-//            QMessageBox::information(this,"提示",tr("%1行数量不能小于0").arg(QString::number(i+1)));
-//        }
-//        if(dPrice < 0)
-//        {
-//            QMessageBox::information(this,"提示",tr("%1行单价不能小于0").arg(QString::number(i+1)));
-//        }
 
         dIncome += (dPrice * nCount);
     }
@@ -309,7 +304,6 @@ void ClinicChargeForm::CreateIncomePart()
 {
     m_dueIncomeLabel = new QLabel(strDueIncomeLabel);
     m_dueIncomeEdit = new QLineEdit;
-    m_dueIncomeEdit->setEnabled(false);
     m_dueIncomeLabel->setBuddy(m_dueIncomeEdit);
 
     m_realIncomeLabel = new QLabel(strRealIncomeLabel);
@@ -423,6 +417,7 @@ bool ClinicChargeForm::Save()
 
     Patient onePatient;
     onePatient.setName(m_nameEdit->text());
+    onePatient.setGender((Gender)m_genderCombo->currentIndex());
     onePatient.setAge(m_ageEdit->text().toInt());
     onePatient.setIDCard(m_idCardNumEdit->text());
     onePatient.setSocialSecurityNum(m_socialSecurityNumEdit->text());
